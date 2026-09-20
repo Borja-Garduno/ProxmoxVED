@@ -34,6 +34,11 @@ pushd "$TEMP_DIR" >/dev/null
 
 vm_preflight
 
+# Fedora Cloud Base sets no password and has no console login, so the only
+# question is which credentials.
+CLOUDINIT_REQUIRED=1
+vm_prompt_cloud_init "fedora"
+
 function default_settings() {
   VMID=$(get_valid_nextid)
   vm_apply_machine_type "q35"
@@ -49,7 +54,7 @@ function default_settings() {
   MTU=""
   START_VM="yes"
   METHOD="default"
-  USE_CLOUD_INIT="yes"
+  echo -e "${CLOUD}${BOLD}${DGN}Cloud-Init: ${BGN}${USE_CLOUD_INIT}${CL}"
   vm_echo_default_settings
 }
 
@@ -67,7 +72,6 @@ function advanced_settings() {
   vm_prompt_mac "$GEN_MAC"
   vm_prompt_vlan
   vm_prompt_mtu
-  vm_prompt_cloud_init "fedora"
   vm_prompt_verbose "no"
   vm_prompt_start_vm "yes"
 
@@ -101,8 +105,9 @@ MIRROR="https://dl.fedoraproject.org/pub/fedora/linux/releases"
 FEDORA_RELEASE=$(curl -fsSL "$MIRROR/" 2>/dev/null | grep -oP 'href="\K[0-9]+(?=/")' | sort -rn | head -1)
 [[ -z "$FEDORA_RELEASE" ]] && FEDORA_RELEASE="44"
 
-IMAGE_DIR="${MIRROR}/${FEDORA_RELEASE}/Cloud/x86_64/images"
-FILE=$(curl -fsSL "${IMAGE_DIR}/" 2>/dev/null | grep -oP 'href="\KFedora-Cloud-Base-Generic-[^"]+\.x86_64\.qcow2(?=")' | sort -V | tail -1)
+FEDORA_ARCH="$(vm_arch_resolve x86_64 aarch64)"
+IMAGE_DIR="${MIRROR}/${FEDORA_RELEASE}/Cloud/${FEDORA_ARCH}/images"
+FILE=$(curl -fsSL "${IMAGE_DIR}/" 2>/dev/null | grep -oP 'href="\KFedora-Cloud-Base-Generic-[^"]+\.'"${FEDORA_ARCH}"'\.qcow2(?=")' | sort -V | tail -1)
 if [[ -z "$FILE" ]]; then
   msg_error "Could not determine the current Fedora Cloud image"
   exit 1
@@ -114,12 +119,13 @@ URL="${IMAGE_DIR}/${FILE}"
 CACHE_FILE="$(vm_image_cache_path "$URL")"
 vm_fetch_image "$URL" "$CACHE_FILE" --cache --min-bytes $((100 * 1024 * 1024)) || exit 115
 
-msg_info "Customizing ${FILE}"
 WORK_FILE=$(mktemp --suffix=.qcow2)
 cp "$CACHE_FILE" "$WORK_FILE"
 popd >/dev/null
 rm -rf "$TEMP_DIR"
 vm_prepare_cloud_image "$WORK_FILE" "$HN" || true
+
+msg_info "Customizing ${FILE}"
 virt-customize -q -a "$WORK_FILE" --run-command "systemctl enable serial-getty@ttyS0.service" >/dev/null 2>&1 || true
 virt-customize -q -a "$WORK_FILE" --selinux-relabel >/dev/null 2>&1 || true
 msg_ok "Customized image"
@@ -140,7 +146,7 @@ fi
 msg_info "Creating a Fedora VM"
 qm create "$VMID" -agent 1${MACHINE} -tablet 0 -localtime 1 -bios ovmf${CPU_TYPE} -cores "$CORE_COUNT" -memory "$RAM_SIZE" \
   -name "$HN" -tags community-script -net0 virtio,bridge="$BRG",macaddr="$MAC""$VLAN""$MTU" -onboot 1 -ostype l26 -scsihw virtio-scsi-pci
-pvesm alloc "$STORAGE" "$VMID" "$DISK0" 4M 1>&/dev/null
+vm_alloc_efi_disk "$DISK0"
 pvesm alloc "$STORAGE" "$VMID" "$DISK2" 4M 1>&/dev/null
 qm importdisk "$VMID" "$WORK_FILE" "$STORAGE" -format "$DISK_IMPORT_FORMAT" 1>&/dev/null
 qm set "$VMID" \
@@ -168,7 +174,7 @@ post_update_to_api "done" "none"
 echo -e "\n${INFO}${BOLD}${GN}Fedora VM Configuration Summary:${CL}"
 echo -e "${TAB}${DGN}VM ID: ${BGN}${VMID}${CL}"
 echo -e "${TAB}${DGN}Hostname: ${BGN}${HN}${CL}"
-echo -e "${TAB}${DGN}Release: ${BGN}Fedora ${FEDORA_RELEASE}${CL}"
+echo -e "${TAB}${DGN}Release: ${BGN}Fedora ${FEDORA_RELEASE} (${FEDORA_ARCH})${CL}"
 if [ -n "${CLOUDINIT_CRED_FILE:-}" ]; then
   echo -e "${TAB}${DGN}Cloud-Init credentials: ${BGN}${CLOUDINIT_CRED_FILE}${CL}"
 fi

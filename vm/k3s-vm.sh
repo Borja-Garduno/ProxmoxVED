@@ -106,31 +106,17 @@ function select_os() {
 }
 
 function select_cloud_init() {
+  # Ubuntu cloud images configure netplan from cloud-init only, so there the
+  # question is which credentials rather than whether.
   if [ "$OS_TYPE" = "ubuntu" ]; then
-    USE_CLOUD_INIT="yes"
-    echo -e "${CLOUD:-${TAB}☁️${TAB}${CL}}${BOLD}${DGN}Cloud-Init: ${BGN}yes (Ubuntu requires Cloud-Init)${CL}"
-    return
+    CLOUDINIT_REQUIRED=1
   fi
-
-  if [[ "${VM_UNATTENDED:-0}" == "1" ]]; then
-    USE_CLOUD_INIT="${VM_CLOUD_INIT:-no}"
-    echo -e "${CLOUD:-${TAB}☁️${TAB}${CL}}${BOLD}${DGN}Cloud-Init: ${BGN}${USE_CLOUD_INIT}${CL}"
-    return
-  fi
-
-  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "CLOUD-INIT" \
-    --yesno "Enable Cloud-Init for VM configuration?\n\nCloud-Init allows automatic configuration of:\n- User accounts and passwords\n- SSH keys\n- Network settings (DHCP/Static)\n- DNS configuration\n\nYou can also configure these settings later in Proxmox UI." 16 68); then
-    USE_CLOUD_INIT="yes"
-    echo -e "${CLOUD:-${TAB}☁️${TAB}${CL}}${BOLD}${DGN}Cloud-Init: ${BGN}yes${CL}"
-  else
-    USE_CLOUD_INIT="no"
-    echo -e "${CLOUD:-${TAB}☁️${TAB}${CL}}${BOLD}${DGN}Cloud-Init: ${BGN}no${CL}"
-  fi
+  vm_prompt_cloud_init "$OS_TYPE"
 }
 
 function get_image_url() {
   local arch
-  arch=$(dpkg --print-architecture)
+  arch=$(vm_arch_resolve amd64 arm64)
   case $OS_TYPE in
   debian)
     if [ "$USE_CLOUD_INIT" = "yes" ]; then
@@ -145,21 +131,18 @@ function get_image_url() {
   esac
 }
 
-get_valid_nextid
-cleanup_vmid
-cleanup
-post_update_to_api "done" "none"
-[[ -n "${TEMP_DIR:-}" && -d "$TEMP_DIR" ]] && rm -rf "$TEMP_DIR"
 vm_preflight
 
 TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
 
+# The OS picks the image and the image decides whether Cloud-Init is optional,
+# so both are settled before the Default/Advanced fork rather than inside it.
+select_os
+select_cloud_init
+
 function default_settings() {
   vm_apply_machine_type "q35"
-  select_os
-  select_cloud_init
-
   VMID=$(get_valid_nextid)
   DISK_SIZE="10G"
   DISK_CACHE=""
@@ -173,13 +156,12 @@ function default_settings() {
   MTU=""
   START_VM="yes"
   METHOD="default"
+  echo -e "${CLOUD}${BOLD}${DGN}Cloud-Init: ${BGN}${USE_CLOUD_INIT}${CL}"
   vm_echo_default_settings
 }
 
 function advanced_settings() {
   METHOD="advanced"
-  select_os
-  select_cloud_init
   vm_prompt_vmid "${VMID:-$(get_valid_nextid)}"
   vm_prompt_machine_type "q35"
   vm_prompt_disk_size "10G"
@@ -205,7 +187,7 @@ function advanced_settings() {
 }
 
 
-vm_start_script "Use Default Settings?" 10 58
+vm_start_script "Use Default Settings?\n\nDefaults:\n• 2 CPU Cores\n• 4 GB RAM\n• 10 GB Disk\n• Cloud-Init enabled" 14 58
 post_to_api_vm
 
 vm_select_storage "$HN"
@@ -252,7 +234,7 @@ done
 msg_info "Creating a ${OS_DISPLAY} VM"
 qm create $VMID -agent 1${MACHINE} -tablet 0 -localtime 1 -bios ovmf${CPU_TYPE} -cores $CORE_COUNT -memory $RAM_SIZE \
   -name $HN -tags community-script -net0 virtio,bridge=$BRG,macaddr=$MAC$VLAN$MTU -onboot 1 -ostype l26 -scsihw virtio-scsi-pci
-pvesm alloc $STORAGE $VMID $DISK0 4M 1>&/dev/null
+vm_alloc_efi_disk "$DISK0"
 qm importdisk $VMID ${FILE} $STORAGE ${DISK_IMPORT:-} 1>&/dev/null
 qm set $VMID \
   -efidisk0 ${DISK0_REF}${FORMAT} \
@@ -262,33 +244,23 @@ qm set $VMID \
 
 vm_resize_disk
 
-case "$(dpkg --print-architecture)" in
-amd64)
-  K9S_ARCH="amd64"
-  ;;
-arm64)
-  K9S_ARCH="arm64"
-  ;;
-*)
-  K9S_ARCH="amd64"
-  ;;
-esac
-K9S_URL="https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_${K9S_ARCH}.tar.gz"
+TOOL_ARCH="$(vm_arch_resolve amd64 arm64)"
+K9S_URL="https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_${TOOL_ARCH}.tar.gz"
 msg_info "Add in Image K3s & Helm"
 virt-customize -q -a "${FILE}" \
   --hostname "${HN}" \
   --install curl,wget,tar,ca-certificates,gnupg,iptables \
   --run-command 'curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644' \
   --run-command 'ln -sf /usr/local/bin/k3s /usr/local/bin/kubectl' \
-  --run-command 'wget -q https://get.helm.sh/helm-v3.18.1-linux-amd64.tar.gz -O /tmp/helm.tar.gz' \
+  --run-command "wget -q https://get.helm.sh/helm-v3.18.1-linux-${TOOL_ARCH}.tar.gz -O /tmp/helm.tar.gz" \
   --run-command 'tar -xzf /tmp/helm.tar.gz -C /tmp' \
-  --run-command 'mv /tmp/linux-amd64/helm /usr/local/bin/helm' \
+  --run-command "mv /tmp/linux-${TOOL_ARCH}/helm /usr/local/bin/helm" \
   --run-command 'chmod +x /usr/local/bin/helm' \
   --run-command 'echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> /root/.bashrc' >/dev/null
 
 msg_ok "Added in Image K3s & Helm"
 
-msg_info "Adding k9s (${K9S_ARCH})"
+msg_info "Adding k9s (${TOOL_ARCH})"
 if curl -fsSL "$K9S_URL" -o /tmp/k9s.tar.gz; then
   if virt-customize -q -a "${FILE}" \
     --upload /tmp/k9s.tar.gz:/tmp/k9s.tar.gz \
