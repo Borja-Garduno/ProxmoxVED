@@ -6,7 +6,6 @@
   "type": "ct",
   "updateable": true,
   "privileged": false,
-  "architectures": ["amd64"],
   "interface_port": 6080,
   "documentation": "https://www.tinymediamanager.org/docs/",
   "website": "https://www.tinymediamanager.org/",

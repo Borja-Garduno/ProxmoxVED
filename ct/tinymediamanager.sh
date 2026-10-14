@@ -14,7 +14,7 @@ var_ram="${var_ram:-4096}"
 var_disk="${var_disk:-12}"
 var_os="${var_os:-debian}"
 var_version="${var_version:-13}"
-var_arm64="${var_arm64:-no}" # not verified on Proxmox aarch64 (upstream publishes linux-arm64.tar.xz)
+#var_arm64="${var_arm64:-no}" # unset = ask the user; set yes/no only when verified (upstream publishes linux-arm64.tar.xz)
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -33,10 +33,10 @@ function update_script() {
   fi
 
   ASSET_PATH=$(curl -fsSL https://release.tinymediamanager.org/ |
-    grep -oE 'v5/dist/tinyMediaManager-[0-9.]+-linux-amd64\.tar\.xz' |
+    grep -oE "v5/dist/tinyMediaManager-[0-9.]+-linux-$(arch_resolve amd64 arm64)\\.tar\\.xz" |
     head -1)
   if [[ -z "${ASSET_PATH}" ]]; then
-    msg_error "Could not resolve the official Linux amd64 download URL."
+    msg_error "Could not resolve the official Linux download URL."
     exit 1
   fi
   ASSET_URL="https://release.tinymediamanager.org/${ASSET_PATH}"

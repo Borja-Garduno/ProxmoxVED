@@ -31,10 +31,10 @@ $STD apt install -y \
 msg_ok "Installed Dependencies"
 
 ASSET_PATH=$(curl -fsSL https://release.tinymediamanager.org/ |
-  grep -oE 'v5/dist/tinyMediaManager-[0-9.]+-linux-amd64\.tar\.xz' |
+  grep -oE "v5/dist/tinyMediaManager-[0-9.]+-linux-$(arch_resolve amd64 arm64)\\.tar\\.xz" |
   head -1)
 if [[ -z "${ASSET_PATH}" ]]; then
-  msg_error "Could not resolve the official Linux amd64 download URL."
+  msg_error "Could not resolve the official Linux download URL."
   exit 1
 fi
 ASSET_URL="https://release.tinymediamanager.org/${ASSET_PATH}"
