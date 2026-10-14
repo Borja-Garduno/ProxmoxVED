@@ -43,10 +43,15 @@
       "options": [
         "auto",
         "cpu",
-        "vulkan"
+        "vulkan",
+        "cuda",
+        "rocm",
+        "sycl-fp16",
+        "sycl-fp32",
+        "openvino"
       ],
       "default": "auto",
-      "help": "auto takes vulkan for any passed-through GPU (AMD via RADV, NVIDIA and Intel too), cpu otherwise. Upstream ships no Linux ROCm or CUDA build."
+      "help": "auto takes vulkan for any passed-through GPU, cpu otherwise. cuda picks the CUDA 12 or 13 build from the host driver; rocm, sycl-fp16/fp32 and openvino are x64 only."
     },
     {
       "name": "var_model_repo",
@@ -100,7 +105,7 @@
       "type": "warning"
     },
     {
-      "text": "The build variant is chosen at install time: cpu or vulkan, or auto to follow the passed-through GPU. Upstream publishes no Linux CUDA or ROCm build, so every GPU is served by the vulkan build - AMD through RADV, NVIDIA through the driver's Vulkan ICD, which has to be present in the container. The choice is remembered in /opt/llama-cpp_data/.backend so updates keep it.",
+      "text": "The build variant is chosen at install time: cpu, vulkan (any GPU vendor), cuda (NVIDIA; CUDA 13 with a 580+ host driver, CUDA 12 otherwise), rocm (AMD, with the matching ROCm runtime from AMD's TheRock wheels), sycl-fp16/sycl-fp32 (Intel GPU, with the oneAPI runtime and Level Zero) or openvino (Intel CPU/GPU), or auto to take vulkan when a GPU is passed through. The choice is remembered in /opt/llama-cpp_data/.backend so updates keep it.",
       "type": "info"
     },
     {
