@@ -32,19 +32,15 @@
   },
   "notes": [
     {
-      "text": "Access is via noVNC (desktop UI streamed to the browser), not a native web app. Open http://<IP>:6080/vnc.html?resize=scale&autoconnect=true. Direct VNC is available on port 5900 (no password by default).",
+      "text": "Access is via VNC on http://<IP>:6080/vnc.html?resize=scale&autoconnect=true or on port 5900 with a VNC client.",
       "type": "info"
     },
     {
-      "text": "Media defaults to /media/movies and /media/tvshows inside the LXC. After install, bind host storage with: pct set <CTID> -mp0 /path/on/host,mp=/media/movies and pct set <CTID> -mp1 /path/on/host,mp=/media/tvshows (or tools/pve/storage-share-helper.sh). On unprivileged LXCs, match host ownership/ACLs to the container UID mapping — do not chmod 777.",
+      "text": "Empty /media/movies and /media/tvshows folders are created as optional bind-mount targets (e.g. pct set <CTID> -mp0 /path/on/host,mp=/media/movies). On unprivileged LXCs, match host ownership to the container UID mapping.",
       "type": "info"
     },
     {
-      "text": "Defaults are 4 CPU / 4096 MiB RAM. Large TV libraries (many episodes) are CPU-heavy during source updates; increase resources further if scans stay saturated.",
-      "type": "info"
-    },
-    {
-      "text": "Application data (settings, cache, logs, backups) is persisted in /opt/tinymediamanager_data via launcher-extra.yml (-Dtmm.contentfolder). Program files live in /opt/tinymediamanager. Built-in auto-update is disabled so updates go through the helper script.",
+      "text": "App data lives in /opt/tinymediamanager_data (-Dtmm.contentfolder) so CLEAN_INSTALL updates can replace /opt/tinymediamanager without wiping settings or the library. Built-in auto-update is disabled; use the helper script.",
       "type": "info"
     }
   ]

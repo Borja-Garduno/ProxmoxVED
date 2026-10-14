@@ -51,12 +51,7 @@ env:
   - "_JAVA_AWT_WM_NONREPARENTING=1"
 EOF
 echo "${VERSION}" >~/.tinymediamanager
-if ! mountpoint -q /media/movies; then
-  mkdir -p /media/movies
-fi
-if ! mountpoint -q /media/tvshows; then
-  mkdir -p /media/tvshows
-fi
+mkdir -p /media/movies /media/tvshows
 msg_ok "Configured tinyMediaManager"
 
 msg_info "Configuring Openbox"
