@@ -35,18 +35,9 @@ function update_script() {
   ASSET_PATH=$(curl -fsSL https://release.tinymediamanager.org/ |
     grep -oE "v5/dist/tinyMediaManager-[0-9.]+-linux-$(arch_resolve amd64 arm64)\\.tar\\.xz" |
     head -1)
-  if [[ -z "${ASSET_PATH}" ]]; then
-    msg_error "Could not resolve the official Linux download URL."
-    exit 1
-  fi
   ASSET_URL="https://release.tinymediamanager.org/${ASSET_PATH}"
   VERSION=$(basename "${ASSET_PATH}" | grep -oE '[0-9]+(\.[0-9]+)+')
   CURRENT=$(cat ~/.tinymediamanager 2>/dev/null || true)
-
-  if [[ -z "${VERSION}" ]]; then
-    msg_error "Could not parse tinyMediaManager version from download URL."
-    exit 1
-  fi
 
   if [[ "${CURRENT}" == "${VERSION}" ]]; then
     msg_ok "tinyMediaManager is already up to date (${VERSION})"
@@ -58,10 +49,6 @@ function update_script() {
   msg_ok "Stopped tinyMediaManager"
 
   CLEAN_INSTALL=1 fetch_and_deploy_from_url "${ASSET_URL}" /opt/tinymediamanager
-  if [[ ! -f /opt/tinymediamanager/tinyMediaManager ]]; then
-    msg_error "tinyMediaManager binary not found after deploy."
-    exit 1
-  fi
   chmod +x /opt/tinymediamanager/tinyMediaManager
   cat <<EOF >/opt/tinymediamanager/launcher-extra.yml
 javaHome: ""

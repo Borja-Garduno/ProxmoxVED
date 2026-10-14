@@ -33,18 +33,10 @@ msg_ok "Installed Dependencies"
 ASSET_PATH=$(curl -fsSL https://release.tinymediamanager.org/ |
   grep -oE "v5/dist/tinyMediaManager-[0-9.]+-linux-$(arch_resolve amd64 arm64)\\.tar\\.xz" |
   head -1)
-if [[ -z "${ASSET_PATH}" ]]; then
-  msg_error "Could not resolve the official Linux download URL."
-  exit 1
-fi
 ASSET_URL="https://release.tinymediamanager.org/${ASSET_PATH}"
 VERSION=$(basename "${ASSET_PATH}" | grep -oE '[0-9]+(\.[0-9]+)+')
 
 fetch_and_deploy_from_url "${ASSET_URL}" /opt/tinymediamanager
-if [[ ! -f /opt/tinymediamanager/tinyMediaManager ]]; then
-  msg_error "tinyMediaManager binary not found after deploy."
-  exit 1
-fi
 chmod +x /opt/tinymediamanager/tinyMediaManager
 
 msg_info "Configuring tinyMediaManager"
@@ -168,15 +160,9 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-systemctl enable -q --now xvfb
-sleep 2
-systemctl enable -q --now openbox
-sleep 1
-systemctl enable -q --now tinymediamanager
-sleep 3
-systemctl enable -q --now x11vnc
-sleep 1
-systemctl enable -q --now novnc
+for svc in xvfb openbox tinymediamanager x11vnc novnc; do
+  systemctl enable -q --now "$svc"
+done
 msg_ok "Created Services"
 
 motd_ssh
