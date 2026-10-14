@@ -2,7 +2,7 @@
 
 # Copyright (c) 2021-2026 community-scripts ORG
 # Author: MickLesk (CanbiZ)
-# License: MIT | https://github.com/community-scripts/ProxmoxVED/raw/main/LICENSE
+# License: MIT | https://github.com/community-scripts/DevScripts/raw/main/LICENSE
 # Source: https://github.com/dreeveapp/dreeve
 
 source /dev/stdin <<<"$FUNCTIONS_FILE_PATH"
@@ -20,7 +20,8 @@ $STD apt install -y \
   ca-certificates
 msg_ok "Installed Dependencies"
 
-fetch_and_deploy_gh_release "frankenphp" "php/frankenphp" "singlefile" "latest" "/opt/frankenphp" "frankenphp-linux-$(arch_resolve x86_64 aarch64)-gnu"
+# 1.13.0's php-cli shifts the script into argv[1], which breaks composer and bin/console (php/frankenphp#2690); unpin once 1.13.1 is out
+fetch_and_deploy_gh_release "frankenphp" "php/frankenphp" "singlefile" "v1.12.7" "/opt/frankenphp" "frankenphp-linux-$(arch_resolve x86_64 aarch64)-gnu"
 fetch_and_deploy_gh_release "dreeve" "dreeveapp/dreeve" "tarball"
 
 msg_info "Providing php CLI"
@@ -47,7 +48,7 @@ msg_ok "Installed PHP Dependencies"
 msg_info "Configuring Dreeve"
 mkdir -p /opt/dreeve_data /opt/dreeve/var/{cache,log}
 DREEVE_PASSWORD=$(openssl rand -base64 18)
-DREEVE_HASH=$(/opt/frankenphp/frankenphp php-cli -r 'echo password_hash($argv[1], PASSWORD_BCRYPT, ["cost" => 13]);' -- "$DREEVE_PASSWORD")
+DREEVE_HASH=$(DREEVE_PASSWORD="$DREEVE_PASSWORD" /opt/frankenphp/frankenphp php-cli -r 'echo password_hash(getenv("DREEVE_PASSWORD"), PASSWORD_BCRYPT, ["cost" => 13]);')
 [[ "$DREEVE_HASH" =~ ^\$2y\$ ]] || {
   msg_error "Could not generate the admin password hash"
   exit 1

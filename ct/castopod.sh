@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+_CS_DEFAULT_URL="https://raw.githubusercontent.com/community-scripts/DevScripts/main"
 # Engine comes from community-scripts/core; this repo only ships the scripts.
 # A local core checkout wins (COMMUNITY_SCRIPTS_CORE_DIR, else a sibling ../core),
 # so a fork or branch of core can be tested without editing this file.
@@ -6,7 +7,7 @@ _cs_boot="${COMMUNITY_SCRIPTS_CORE_DIR:-$(dirname "${BASH_SOURCE[0]}")/../../cor
 source "$_cs_boot" 2>/dev/null || source <(curl -fsSL "${COMMUNITY_SCRIPTS_CORE_URL:-https://raw.githubusercontent.com/community-scripts/core/main}/core/build.func")
 # Copyright (c) 2021-2026 community-scripts ORG
 # Author: MickLesk (CanbiZ)
-# License: MIT | https://github.com/community-scripts/ProxmoxVED/raw/main/LICENSE
+# License: MIT | https://github.com/community-scripts/DevScripts/raw/main/LICENSE
 # Source: https://castopod.org/
 
 APP="Castopod"
@@ -18,7 +19,7 @@ var_os="${var_os:-debian}"
 var_version="${var_version:-13}"
 var_arm64="${var_arm64:-yes}"
 var_unprivileged="${var_unprivileged:-1}"
-var_testurl="${var_testurl:-https://github.com/community-scripts/ProxmoxVED/issues/2028}"
+var_testurl="${var_testurl:-https://github.com/community-scripts/DevScripts/issues/2028}"
 
 header_info "$APP"
 variables
@@ -34,6 +35,9 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
+
+  # Castopod appends the media folder itself, so the old default produced /media/media/
+  sed -i 's|^\(media\.baseURL="[^"]*\)/media/"$|\1/"|' /opt/castopod/.env
 
   if GITLAB_URL="https://code.castopod.org" check_for_gl_release "castopod" "adaures/castopod"; then
     msg_info "Stopping Service"

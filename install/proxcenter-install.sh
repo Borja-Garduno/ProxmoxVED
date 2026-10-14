@@ -2,7 +2,7 @@
 
 # Copyright (c) 2021-2026 community-scripts ORG
 # Author: MickLesk (CanbiZ)
-# License: MIT | https://github.com/community-scripts/ProxmoxVED/raw/main/LICENSE
+# License: MIT | https://github.com/community-scripts/DevScripts/raw/main/LICENSE
 # Source: https://github.com/adminsyspro/proxcenter-ui
 
 source /dev/stdin <<<"$FUNCTIONS_FILE_PATH"
@@ -24,7 +24,8 @@ cd /opt/proxcenter/frontend
 $STD npm ci --legacy-peer-deps --ignore-scripts
 $STD npm run build:icons
 $STD npx prisma generate
-$STD npm run build
+# the type check in next build runs out of heap at 2 GB
+NODE_OPTIONS="--max-old-space-size=4608" $STD npm run build
 msg_ok "Built ProxCenter"
 
 msg_info "Configuring ProxCenter"

@@ -2,7 +2,7 @@
 
 # Copyright (c) 2021-2026 community-scripts ORG
 # Author: MickLesk (CanbiZ)
-# License: MIT | https://github.com/community-scripts/ProxmoxVED/raw/main/LICENSE
+# License: MIT | https://github.com/community-scripts/DevScripts/raw/main/LICENSE
 # Source: https://github.com/DIYgod/RSSHub
 
 source /dev/stdin <<<"$FUNCTIONS_FILE_PATH"
@@ -18,11 +18,12 @@ $STD apt install -y \
   build-essential \
   python3 \
   git \
-  redis-server
+  redis-server \
+  chromium
 systemctl enable -q --now redis-server
 msg_ok "Installed Dependencies"
 
-NODE_VERSION="22" NODE_MODULE="pnpm@^10" setup_nodejs
+NODE_VERSION="24" NODE_MODULE="pnpm@^10" setup_nodejs
 
 fetch_and_deploy_gh_branch "rsshub" "DIYgod/RSSHub"
 
@@ -40,6 +41,7 @@ CACHE_TYPE=redis
 REDIS_URL=redis://127.0.0.1:6379/
 CACHE_EXPIRE=300
 NODE_OPTIONS=--max-http-header-size=32768
+CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Restrict who may use this instance (recommended if reachable from outside):
 #ACCESS_KEY=$(openssl rand -hex 16)

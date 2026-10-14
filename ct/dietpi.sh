@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+_CS_DEFAULT_URL="https://raw.githubusercontent.com/community-scripts/DevScripts/main"
 # Engine comes from community-scripts/core; this repo only ships the scripts.
 # Local checkout wins (COMMUNITY_SCRIPTS_CORE_DIR, else a sibling ../core), so a
 # fork/branch of core can be tested without touching this file.
@@ -7,7 +8,7 @@ source "$_cs_boot" 2>/dev/null || source <(curl -fsSL "${COMMUNITY_SCRIPTS_CORE_
 
 # Copyright (c) 2021-2026 community-scripts ORG
 # Author: mews-se
-# License: MIT | https://github.com/community-scripts/ProxmoxVED/raw/main/LICENSE
+# License: MIT | https://github.com/community-scripts/DevScripts/raw/main/LICENSE
 # Source: https://dietpi.com/
 
 APP="DietPi"
@@ -43,6 +44,14 @@ start
 build_container
 description
 
+msg_info "Restarting ${APP} for DietPi's first boot"
+if command -v pct &>/dev/null; then
+  pct reboot "$CTID"
+else
+  incus restart "$CTID"
+fi
+msg_ok "Restarted ${APP}"
+
 msg_ok "Completed successfully!"
 msg_custom "🚀" "${GN}" "${APP} setup has been successfully initialized!"
-echo -e "${INFO}${YW} Restart the container once, DietPi's first run setup then continues on the console.${CL}"
+echo -e "${INFO}${YW} DietPi's first run setup starts at the next console login.${CL}"

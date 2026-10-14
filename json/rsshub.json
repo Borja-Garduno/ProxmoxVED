@@ -46,6 +46,10 @@
       "type": "info"
     },
     {
+      "text": "Routes that render the page in a browser use Debian's chromium (CHROMIUM_EXECUTABLE_PATH in /opt/rsshub.env). Sites with bot protection can still block them; such routes fail with a 503 that names the cause.",
+      "type": "info"
+    },
+    {
       "text": "The build is a large TypeScript project and takes several minutes; 4 GB RAM is the practical minimum for it to complete.",
       "type": "info"
     }
