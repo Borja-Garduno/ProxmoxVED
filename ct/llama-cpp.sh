@@ -19,6 +19,28 @@ var_gpu="${var_gpu:-yes}"
 var_unprivileged="${var_unprivileged:-1}"
 var_testurl="${var_testurl:-https://github.com/community-scripts/DevScripts/issues/2124}"
 
+# Asked here because the installer runs under lxc-attach, where it can never
+# reach a terminal. Updates run inside the container and keep the recorded build.
+if [[ -z "${var_backend:-}" ]] && command -v pveversion >/dev/null 2>&1 && [[ -t 0 ]]; then
+  LLAMA_BACKENDS=(
+    "auto" "Vulkan if a GPU is passed through, else CPU"
+    "cpu" "CPU only"
+    "vulkan" "Vulkan (Intel, AMD and NVIDIA GPUs)"
+    "cuda" "NVIDIA CUDA (12 or 13, from the host driver)"
+  )
+  if [[ "$(dpkg --print-architecture 2>/dev/null)" == "amd64" ]]; then
+    LLAMA_BACKENDS+=(
+      "rocm" "AMD ROCm"
+      "sycl-fp16" "Intel GPU via oneAPI SYCL (FP16)"
+      "sycl-fp32" "Intel GPU via oneAPI SYCL (FP32)"
+      "openvino" "Intel CPU/GPU via OpenVINO"
+    )
+  fi
+  var_backend=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "LLAMA.CPP BUILD" --default-item "auto" \
+    --menu "Choose the llama.cpp build:" $((${#LLAMA_BACKENDS[@]} / 2 + 8)) 72 $((${#LLAMA_BACKENDS[@]} / 2)) \
+    "${LLAMA_BACKENDS[@]}" 3>&1 1>&2 2>&3) || exit_script
+fi
+
 export var_backend="${var_backend:-}"
 export var_model_repo="${var_model_repo:-}"
 export var_ctx_size="${var_ctx_size:-}"
@@ -41,8 +63,24 @@ function update_script() {
     exit
   fi
 
-  # Only the bNNNN tags carry the prebuilt binaries; other tags have no assets.
-  if check_for_gh_release "llama-cpp" "ggml-org/llama.cpp" "" "" "b"; then
+  # Follow the channel picked at install unless GH_INCLUDE_PRERELEASE is given
+  # for this run: the bNNNN prerelease builds, or the build a stable vX.Y.Z
+  # release names in its nightly-tag.txt (stable releases carry no binaries).
+  # Installs that predate the record all tracked the bNNNN builds, and reading
+  # them as stable would downgrade them.
+  GH_INCLUDE_PRERELEASE="${GH_INCLUDE_PRERELEASE:-$(cat /opt/llama-cpp_data/.prerelease 2>/dev/null || echo 1)}"
+  export GH_INCLUDE_PRERELEASE
+  LLAMA_RELEASE=""
+  if [[ "$GH_INCLUDE_PRERELEASE" == "1" ]]; then
+    if check_for_gh_release "llama-cpp" "ggml-org/llama.cpp" "" "" "b"; then
+      LLAMA_RELEASE="$CHECK_UPDATE_RELEASE"
+    fi
+  elif check_for_gh_release "llama-cpp-stable" "ggml-org/llama.cpp"; then
+    USE_ORIGINAL_FILENAME=true fetch_and_deploy_gh_release "llama-cpp-stable" "ggml-org/llama.cpp" "singlefile" "$CHECK_UPDATE_RELEASE" "/opt/llama-cpp_data" "nightly-tag.txt"
+    LLAMA_RELEASE="$(</opt/llama-cpp_data/nightly-tag.txt)"
+  fi
+
+  if [[ -n "$LLAMA_RELEASE" ]]; then
     msg_info "Stopping Service"
     systemctl stop llama-cpp
     msg_ok "Stopped Service"
@@ -68,17 +106,17 @@ function update_script() {
     *) LLAMA_ASSET="llama-*-bin-ubuntu-${LLAMA_ARCH}.tar.gz" ;;
     esac
 
-    CLEAN_INSTALL=1 fetch_and_deploy_gh_release "llama-cpp" "ggml-org/llama.cpp" "prebuild" "${CHECK_UPDATE_RELEASE}" "/opt/llama-cpp" "$LLAMA_ASSET" "b"
+    CLEAN_INSTALL=1 fetch_and_deploy_gh_release "llama-cpp" "ggml-org/llama.cpp" "prebuild" "$LLAMA_RELEASE" "/opt/llama-cpp" "$LLAMA_ASSET"
     # The wipe above also removed the CUDA runtime, so it always goes back in.
     if [[ -n "$LLAMA_CUDART_ASSET" ]]; then
       rm -f ~/.llama-cpp-cudart
-      fetch_and_deploy_gh_release "llama-cpp-cudart" "ggml-org/llama.cpp" "prebuild" "${CHECK_UPDATE_RELEASE}" "/opt/llama-cpp" "$LLAMA_CUDART_ASSET" "b"
+      fetch_and_deploy_gh_release "llama-cpp-cudart" "ggml-org/llama.cpp" "prebuild" "$LLAMA_RELEASE" "/opt/llama-cpp" "$LLAMA_CUDART_ASSET"
     fi
     chmod +x /opt/llama-cpp/llama-*
 
     case "$LLAMA_BACKEND" in
     sycl-* | openvino)
-      fetch_and_deploy_gh_release "level-zero" "oneapi-src/level-zero" "binary" "latest" "" "libze1_*+u24.04_amd64.deb" || true
+      fetch_and_deploy_gh_release "level-zero" "oneapi-src/level-zero" "binary" "latest" "" "libze1_*u24.04_amd64.deb" || true
       if [[ -d /dev/dri ]]; then
         fetch_and_deploy_gh_release "intel-level-zero-gpu" "intel/compute-runtime" "binary" "latest" "" "libze-intel-gpu1_*_amd64.deb" || true
       fi
@@ -95,6 +133,8 @@ function update_script() {
       fi
       ;;
     esac
+
+    echo "$GH_INCLUDE_PRERELEASE" >/opt/llama-cpp_data/.prerelease
 
     msg_info "Starting Service"
     systemctl start llama-cpp

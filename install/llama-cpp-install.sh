@@ -13,7 +13,7 @@ setting_up_container
 network_check
 update_os
 
-var_model_repo="${var_model_repo:-ggml-org/gemma-3-1b-it-GGUF}"
+var_model_repo="${var_model_repo:-ggml-org/gemma-4-E2B-it-GGUF:Q4_0}"
 var_port="${var_port:-8080}"
 var_ctx_size="${var_ctx_size:-4096}"
 var_offload_layers="${var_offload_layers:-}"
@@ -26,18 +26,6 @@ var_api_key="${var_api_key:-}"
 #   rocm      ubuntu-rocm-<ver>-x64           needs the matching ROCm (TheRock) runtime
 #   sycl      ubuntu-sycl-{fp16,fp32}-x64     Intel GPUs, needs oneAPI + Level Zero
 #   openvino  ubuntu-openvino-<ver>-x64       Intel CPU/GPU, OpenVINO runtime is bundled
-if [[ -z "${var_backend:-}" ]]; then
-  LLAMA_CHOICE=$(prompt_select "Select the llama.cpp build:" 1 60 \
-    "auto      - Vulkan when a GPU is passed through, otherwise CPU" \
-    "cpu       - CPU only" \
-    "vulkan    - Vulkan (Intel, AMD and NVIDIA GPUs)" \
-    "cuda      - NVIDIA CUDA" \
-    "rocm      - AMD ROCm" \
-    "sycl-fp16 - Intel GPU via oneAPI SYCL (FP16)" \
-    "sycl-fp32 - Intel GPU via oneAPI SYCL (FP32)" \
-    "openvino  - Intel CPU/GPU via OpenVINO")
-  var_backend="${LLAMA_CHOICE%% *}"
-fi
 var_backend="${var_backend:-auto}"
 
 if [[ "$var_backend" == "auto" ]]; then
@@ -79,7 +67,7 @@ setup_hwaccel
 # SYCL and OpenVINO reach an Intel GPU through Level Zero. release.yml builds
 # SYCL against the loader from oneapi-src/level-zero, so use the same package.
 if [[ "$var_backend" == sycl-* || "$var_backend" == "openvino" ]]; then
-  fetch_and_deploy_gh_release "level-zero" "oneapi-src/level-zero" "binary" "latest" "" "libze1_*+u24.04_amd64.deb"
+  fetch_and_deploy_gh_release "level-zero" "oneapi-src/level-zero" "binary" "latest" "" "libze1_*u24.04_amd64.deb"
   if [[ -d /dev/dri ]]; then
     fetch_and_deploy_gh_release "intel-level-zero-gpu" "intel/compute-runtime" "binary" "latest" "" "libze-intel-gpu1_*_amd64.deb" || true
   fi
@@ -128,14 +116,21 @@ openvino) LLAMA_ASSET="llama-*-bin-ubuntu-openvino-*x64.tar.gz" ;;
 *) LLAMA_ASSET="llama-*-bin-ubuntu-${LLAMA_ARCH}.tar.gz" ;;
 esac
 
-# Only the bNNNN tags carry the prebuilt binaries; other tags have no assets.
-fetch_and_deploy_gh_release "llama-cpp" "ggml-org/llama.cpp" "prebuild" "latest" "/opt/llama-cpp" "$LLAMA_ASSET" "b"
-LLAMA_RELEASE="$(cat ~/.llama-cpp)"
-if [[ -n "$LLAMA_CUDART_ASSET" ]]; then
-  fetch_and_deploy_gh_release "llama-cpp-cudart" "ggml-org/llama.cpp" "prebuild" "$LLAMA_RELEASE" "/opt/llama-cpp" "$LLAMA_CUDART_ASSET" "b"
-fi
-
+# Only the bNNNN builds carry binaries, and upstream marks them prerelease. A
+# stable vX.Y.Z release ships just nightly-tag.txt, naming the build it was cut
+# from, so without GH_INCLUDE_PRERELEASE=1 that build is the one deployed.
 mkdir -p /opt/llama-cpp_data/models
+if [[ "${GH_INCLUDE_PRERELEASE:-0}" == "1" ]]; then
+  fetch_and_deploy_gh_release "llama-cpp" "ggml-org/llama.cpp" "prebuild" "latest" "/opt/llama-cpp" "$LLAMA_ASSET" "b"
+  LLAMA_RELEASE="$(cat ~/.llama-cpp)"
+else
+  USE_ORIGINAL_FILENAME=true fetch_and_deploy_gh_release "llama-cpp-stable" "ggml-org/llama.cpp" "singlefile" "latest" "/opt/llama-cpp_data" "nightly-tag.txt"
+  LLAMA_RELEASE="$(</opt/llama-cpp_data/nightly-tag.txt)"
+  fetch_and_deploy_gh_release "llama-cpp" "ggml-org/llama.cpp" "prebuild" "$LLAMA_RELEASE" "/opt/llama-cpp" "$LLAMA_ASSET"
+fi
+if [[ -n "$LLAMA_CUDART_ASSET" ]]; then
+  fetch_and_deploy_gh_release "llama-cpp-cudart" "ggml-org/llama.cpp" "prebuild" "$LLAMA_RELEASE" "/opt/llama-cpp" "$LLAMA_CUDART_ASSET"
+fi
 LLAMA_LIBPATH="/opt/llama-cpp"
 
 # The ROCm build carries no ROCm libraries. release.yml builds it against AMD's
@@ -158,6 +153,7 @@ fi
 msg_info "Configuring llama.cpp"
 chmod +x /opt/llama-cpp/llama-*
 echo "$var_backend" >/opt/llama-cpp_data/.backend
+echo "${GH_INCLUDE_PRERELEASE:-0}" >/opt/llama-cpp_data/.prerelease
 if [[ -z "$var_offload_layers" ]]; then
   [[ "$var_backend" == "cpu" ]] && var_offload_layers=0 || var_offload_layers=999
 fi
@@ -169,6 +165,9 @@ LLAMA_ARG_PORT=${var_port}
 #LLAMA_ARG_MODEL=/opt/llama-cpp_data/models/your-model.gguf
 # ...or let llama-server pull one from Hugging Face on first start:
 LLAMA_ARG_HF_REPO=${var_model_repo}
+# Model switching: comment out LLAMA_ARG_HF_REPO (and LLAMA_ARG_MODEL) to serve
+# every model in this folder and pick one per request from the web UI or API:
+LLAMA_ARG_MODELS_DIR=/opt/llama-cpp_data/models
 
 LLAMA_CACHE=/opt/llama-cpp_data/models
 LLAMA_ARG_CTX_SIZE=${var_ctx_size}
@@ -178,9 +177,10 @@ case "$var_backend" in
 sycl-*)
   cat <<EOF >>/opt/llama-cpp.env
 
-# SYCL: cache JIT-compiled kernels across restarts; pick GPUs with the selector
-SYCL_CACHE_PERSISTENT=1
-SYCL_CACHE_DIR=/opt/llama-cpp_data/sycl-cache
+# SYCL: the persistent kernel cache speeds up restarts but can stop models
+# from loading on some Intel GPUs, so it is off by default
+#SYCL_CACHE_PERSISTENT=1
+#SYCL_CACHE_DIR=/opt/llama-cpp_data/sycl-cache
 #ONEAPI_DEVICE_SELECTOR=level_zero:0
 EOF
   ;;
