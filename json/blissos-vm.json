@@ -34,19 +34,11 @@
   },
   "notes": [
     {
-      "text": "The last official x86 release is from October 2024 (BlissOS 16, Android 13). The BlissOS17 directories exist on SourceForge but contain no builds.",
+      "text": "The last official x86 release is BlissOS 16 (Android 13) from October 2024. There are no newer builds.",
       "type": "warning"
     },
     {
-      "text": "Without a passed-through GPU everything renders in software, which works but is slow. For Android apps on a Linux host instead, waydroid-vm is the lighter option.",
-      "type": "info"
-    },
-    {
-      "text": "This VM boots an installer. Open the console, choose Installation, create and format a partition on sda, and say yes to GRUB and a writable /system.",
-      "type": "info"
-    },
-    {
-      "text": "This is the FOSS build, without Google apps. The Gapps tree sits beside it on SourceForge.",
+      "text": "Without a passed-through GPU everything renders in software, which works but is slow. For Android apps on a Linux host, waydroid-vm is the lighter option.",
       "type": "info"
     }
   ]

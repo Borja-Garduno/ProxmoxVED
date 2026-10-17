@@ -38,20 +38,16 @@
   },
   "notes": [
     {
-      "text": "There is no default account. Use Sign In to register the first user with an email address and password. Guests can read notes but cannot create them.",
+      "text": "There is no default account. Register the first user under Sign In with an email address and password.",
       "type": "info"
     },
     {
-      "text": "Registration is open to anyone who can reach the instance. Once your accounts exist, set \"allowEmailRegister\": false in /opt/hedgedoc_data/config.json and run systemctl restart hedgedoc. Further users can then be added from the shell: cd /opt/hedgedoc && NODE_ENV=production CMD_CONFIG_FILE=/opt/hedgedoc_data/config.json bin/manage_users --add user@example.com",
+      "text": "Anyone who reaches the instance can register. Once your accounts exist, set \"allowEmailRegister\": false in /opt/hedgedoc_data/config.json and run systemctl restart hedgedoc.",
       "type": "warning"
     },
     {
-      "text": "The domain in config.json must match the address in the browser, otherwise the page loads without scripts. It is set to the container IP with urlAddPort. Behind a reverse proxy set domain to your hostname, urlAddPort to false and protocolUseSSL to true for HTTPS, then restart hedgedoc.",
+      "text": "Behind a reverse proxy, set domain to your hostname, urlAddPort to false and protocolUseSSL to true in config.json, then restart hedgedoc. Otherwise the page loads without scripts.",
       "type": "warning"
-    },
-    {
-      "text": "Configuration, the session secret and uploaded images live in /opt/hedgedoc_data and survive updates. Notes are stored in the PostgreSQL database hedgedoc.",
-      "type": "info"
     }
   ]
 }

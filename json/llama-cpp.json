@@ -16,7 +16,7 @@
   "website": "https://github.com/ggml-org/llama.cpp",
   "repository": "https://github.com/ggml-org/llama.cpp",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/llama-cpp.webp",
-  "description": "llama.cpp runs GGUF language models directly in C/C++ with no Python runtime. This installs llama-server, which serves a built-in web chat UI plus an OpenAI-compatible API on the same port, so it can back tools like AnythingLLM, Open WebUI or Claude Code. Lighter and closer to the metal than Ollama.",
+  "description": "llama.cpp runs GGUF language models directly in C/C++ with no Python runtime. Its llama-server offers a built-in web chat and an OpenAI-compatible API, so it can back tools like AnythingLLM, Open WebUI or Claude Code.",
   "install_methods": [
     {
       "type": "default",
@@ -97,23 +97,15 @@
   ],
   "notes": [
     {
-      "text": "On first start llama-server downloads the model set in LLAMA_ARG_HF_REPO (default: ggml-org/gemma-4-E2B-it-GGUF:Q4_0, roughly 3.5 GB with its vision projector) into /opt/llama-cpp_data/models, so the container is usable straight away. Choose another at install time with var_model_repo, or later swap it for any GGUF repo (repo or repo:QUANT), or point LLAMA_ARG_MODEL at a local file, then restart.",
-      "type": "info"
-    },
-    {
-      "text": "The web UI and the OpenAI-compatible API share port 8080: /v1/chat/completions, /v1/models and friends. There is no authentication unless an API key is set - supply one at install time or set LLAMA_ARG_API_KEY in /opt/llama-cpp.env.",
+      "text": "The web UI and the API have no authentication unless you set an API key at install time or LLAMA_ARG_API_KEY in /opt/llama-cpp.env.",
       "type": "warning"
     },
     {
-      "text": "The build variant is chosen at install time: cpu, vulkan (any GPU vendor), cuda (NVIDIA; CUDA 13 with a 580+ host driver, CUDA 12 otherwise), rocm (AMD, with the matching ROCm runtime from AMD's TheRock wheels), sycl-fp16/sycl-fp32 (Intel GPU, with the oneAPI runtime and Level Zero) or openvino (Intel CPU/GPU), or auto to take vulkan when a GPU is passed through. The choice is remembered in /opt/llama-cpp_data/.backend so updates keep it.",
+      "text": "The first start downloads gemma-4-E2B-it Q4_0 (about 3.5 GB). Set LLAMA_ARG_HF_REPO to another GGUF repo, or LLAMA_ARG_MODEL to a local file, then run systemctl restart llama-cpp.",
       "type": "info"
     },
     {
-      "text": "RAM is the limiting factor: the model must fit alongside the KV cache. 8 GB comfortably runs models up to roughly 7B at Q4. Raise LLAMA_ARG_CTX_SIZE only if you have headroom.",
-      "type": "info"
-    },
-    {
-      "text": "By default the build named by the latest stable llama.cpp release (vX.Y.Z) is installed. Set GH_INCLUDE_PRERELEASE=1 to follow the nightly bNNNN builds instead. The choice is remembered in /opt/llama-cpp_data/.prerelease and used by updates; GH_INCLUDE_PRERELEASE=0 or 1 on an update run switches it.",
+      "text": "Pick the build with var_backend: Vulkan works on any GPU, or use CUDA, ROCm, SYCL or OpenVINO. NVIDIA on Vulkan needs the driver's Vulkan libraries in the container.",
       "type": "info"
     }
   ]

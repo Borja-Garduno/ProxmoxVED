@@ -17,7 +17,7 @@
   "website": "https://github.com/fredrikburmester/streamystats",
   "repository": "https://github.com/fredrikburmester/streamystats",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/streamystats.webp",
-  "description": "Streamystats is a statistics and analytics service for Jellyfin. It tracks playback sessions through the Jellyfin API and shows watch history, per-user, library and client statistics, and watch-time graphs. It supports multiple servers and can import history from Jellystat and the Playback Reporting plugin. Optional AI features add library chat and embedding-based recommendations through OpenAI-compatible, Ollama or Anthropic providers.",
+  "description": "Streamystats is a statistics and analytics service for Jellyfin. It shows watch history, per-user, library and client statistics and watch-time graphs for one or more servers, and can import history from Jellystat and the Playback Reporting plugin.",
   "install_methods": [
     {
       "type": "default",
@@ -38,20 +38,12 @@
   },
   "notes": [
     {
-      "text": "On first visit the setup page asks for your Jellyfin URL and an API key. Create the key in Jellyfin under Dashboard > API Keys. The optional internal URL is used for server-to-server traffic when Jellyfin is reachable on a LAN address.",
+      "text": "The first visit asks for your Jellyfin URL and an API key (Jellyfin: Dashboard > API Keys). After that, sign in with your Jellyfin account; Jellyfin admins get the admin views.",
       "type": "info"
     },
     {
-      "text": "There is no separate account: after setup, sign in with your Jellyfin username and password. Jellyfin administrators get the admin views in Streamystats.",
+      "text": "AI chat and recommendations stay off until you set up a provider under Settings > AI.",
       "type": "info"
-    },
-    {
-      "text": "The first sync of a large library can take a while. AI chat and embedding-based recommendations stay off until you configure a provider under Settings > AI.",
-      "type": "info"
-    },
-    {
-      "text": "Installs and updates build the Next.js app from source, which peaks at about 2.3 GB of RAM. Keep the container at 3 GB or more, or updates can fail mid-build.",
-      "type": "warning"
     }
   ]
 }

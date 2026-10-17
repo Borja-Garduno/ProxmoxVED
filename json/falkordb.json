@@ -17,7 +17,7 @@
   "website": "https://www.falkordb.com/",
   "repository": "https://github.com/FalkorDB/FalkorDB",
   "logo": "https://cdn.jsdelivr.net/gh/FalkorDB/falkordb-browser@main/public/icons/F-light.svg",
-  "description": "FalkorDB is a low-latency property graph database built on sparse matrices and linear algebra (GraphBLAS), aimed at knowledge graphs and GraphRAG for LLM applications. It runs as a Redis module, is queried with OpenCypher through the GRAPH.* commands from any Redis client, and comes with FalkorDB Browser, a web UI for running queries and exploring graphs.",
+  "description": "FalkorDB is a low-latency property graph database built on sparse matrices (GraphBLAS), aimed at knowledge graphs and GraphRAG. It runs as a Redis module queried with OpenCypher from any Redis client, and FalkorDB Browser adds a web UI for queries and exploring graphs.",
   "install_methods": [
     {
       "type": "default",
@@ -38,23 +38,11 @@
   },
   "notes": [
     {
-      "text": "The Redis password is generated at install and stored as requirepass in /etc/redis/falkordb.conf. FalkorDB itself listens on port 6379.",
-      "type": "warning"
-    },
-    {
-      "text": "Try it from the container: redis-cli -a <password> GRAPH.QUERY social \"CREATE (:Person {name:'Alice'})-[:KNOWS]->(:Person {name:'Bob'})\", then redis-cli -a <password> GRAPH.QUERY social \"MATCH (a)-[:KNOWS]->(b) RETURN a.name, b.name\".",
+      "text": "Log in to FalkorDB Browser with host localhost, port 6379, an empty username and the requirepass password from /etc/redis/falkordb.conf.",
       "type": "info"
     },
     {
-      "text": "FalkorDB Browser runs on port 3000. Log in with host localhost, port 6379, an empty username and the requirepass password. If you reach it under another address (new IP, hostname, reverse proxy), set NEXTAUTH_URL in /opt/falkordb-browser_data/.env and restart falkordb-browser.",
-      "type": "info"
-    },
-    {
-      "text": "FalkorDB is loaded as a module into Redis 8 from packages.redis.io (service redis-server). Module arguments sit on the loadmodule line in /etc/redis/falkordb.conf; graph data (RDB and AOF) lives in /var/lib/redis, and LOAD CSV reads from /var/lib/FalkorDB/import.",
-      "type": "info"
-    },
-    {
-      "text": "The 4 GB RAM are for building FalkorDB Browser during install and browser updates (peak about 3.4 GB). At runtime FalkorDB and the browser use about 200 MB plus your graph data.",
+      "text": "If you open the browser under another address (new IP, hostname, reverse proxy), set NEXTAUTH_URL in /opt/falkordb-browser_data/.env and run systemctl restart falkordb-browser.",
       "type": "info"
     }
   ]

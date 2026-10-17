@@ -34,20 +34,12 @@
   },
   "notes": [
     {
-      "text": "The manager password is generated during installation and stored as MANAGER_PASSWORD in /opt/razzia/.env. Open the manager interface at http://<IP>:3000/manager and log in with it. Manager access is refused until MANAGER_PASSWORD is set.",
+      "text": "Host quizzes at http://<IP>:3000/manager with the generated password stored as MANAGER_PASSWORD in /opt/razzia/.env.",
       "type": "info"
     },
     {
-      "text": "JWT_SECRET in /opt/razzia/.env signs the session tokens and is generated during installation. Leaving it empty makes the server generate a new secret at every start, which logs managers out and gives players a fresh identity on each restart. It must be at least 32 characters; a shorter value is ignored. Restart the service after editing the file: systemctl restart razzia",
+      "text": "Behind a reverse proxy, forward the WebSocket upgrade headers and allow 100 MB uploads, or players stay stuck on connecting.",
       "type": "info"
-    },
-    {
-      "text": "Quizzes, saved results, uploaded media and optional branding live in /opt/razzia-config (quizz/, results/, media/, branding/). An example quiz is created there on first start.",
-      "type": "info"
-    },
-    {
-      "text": "Game state is kept in memory by the socket server, so only run a single instance. Behind a reverse proxy, WebSocket upgrade headers must be forwarded to port 3000 or clients stay stuck on connecting, and the upload limit must allow 100 MB media files.",
-      "type": "warning"
     }
   ]
 }

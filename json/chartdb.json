@@ -18,7 +18,7 @@
     "arm64"
   ],
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/chartdb.webp",
-  "description": "ChartDB is a database diagram editor that runs in the browser. A single query run against PostgreSQL, MySQL, MariaDB, SQL Server, SQLite, ClickHouse or CockroachDB returns the schema as JSON, which ChartDB turns into an editable entity-relationship diagram; diagrams can also be built from scratch, imported from DBML or SQL, and exported as SQL, DBML or images. This script builds the web app from source and serves it with nginx.",
+  "description": "ChartDB is a database diagram editor that runs in the browser. One query against PostgreSQL, MySQL, MariaDB, SQL Server, SQLite, ClickHouse or CockroachDB returns the schema, which ChartDB turns into an editable ER diagram that can be exported as SQL, DBML or an image.",
   "install_methods": [
     {
       "type": "default",
@@ -39,24 +39,16 @@
   },
   "notes": [
     {
-      "text": "Diagrams are stored in the browser (IndexedDB), not in the container. Another browser or device, cleared site data or a different address (new IP, hostname or reverse proxy) shows an empty diagram list, and container backups do not include them. Export diagrams you want to keep (JSON, DBML or SQL).",
+      "text": "Diagrams are stored in your browser, not in the container. Another browser, cleared site data or a new address shows an empty list, so export the diagrams you want to keep.",
       "type": "warning"
     },
     {
-      "text": "ChartDB is served over HTTPS with a self-signed certificate (http:// redirects to it): accept the certificate warning on first visit. HTTPS is needed because the AI export and the copy buttons only work in a secure context.",
+      "text": "ChartDB uses a self-signed certificate: accept the browser warning on the first visit.",
       "type": "info"
     },
     {
-      "text": "AI-assisted SQL export to another database dialect is optional. In /opt/chartdb_data/config.js, uncomment OPENAI_API_KEY and fill in the key for OpenAI, or uncomment all three lines for an OpenAI-compatible server such as Ollama or vLLM (set its URL and model, and leave the key empty if the server needs none), then reload the page; no rebuild or restart is needed. The browser calls the endpoint directly, so it has to be reachable from the browser over HTTPS and allow requests from the ChartDB address (CORS).",
-      "type": "info"
-    },
-    {
-      "text": "An OPENAI_API_KEY in config.js is sent to every browser that opens ChartDB, so anyone who can reach the container can read it. Use a key with a spending limit and keep ChartDB off the public internet when one is set.",
+      "text": "For the optional AI SQL export, set OPENAI_API_KEY or an OpenAI-compatible endpoint in /opt/chartdb_data/config.js. The key is sent to every browser that opens ChartDB, so use one with a spending limit.",
       "type": "warning"
-    },
-    {
-      "text": "Fathom analytics are switched off by DISABLE_ANALYTICS in /opt/chartdb_data/config.js. Install and every update build ChartDB from source and need the 6 GB of RAM; the running site is static files served by nginx, so the RAM can be lowered to 512 MB after the install and raised again before an update.",
-      "type": "info"
     }
   ]
 }

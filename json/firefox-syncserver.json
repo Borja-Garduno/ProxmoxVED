@@ -13,7 +13,7 @@
   "website": "https://www.mozilla.org/firefox/features/sync/",
   "repository": "https://github.com/mozilla-services/syncstorage-rs",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/firefox.webp",
-  "description": "Firefox Syncserver (syncstorage-rs) is Mozilla's own Rust server behind Firefox Sync, combining the sync storage and the tokenserver in one binary. Self-hosted, it keeps your Firefox bookmarks, history, passwords, open tabs, add-ons and form data on your own infrastructure, while you still sign in with a regular Mozilla account. Firefox encrypts every record before upload, so the server never sees their contents.",
+  "description": "Firefox Syncserver (syncstorage-rs) is Mozilla's server behind Firefox Sync. It keeps your bookmarks, history, passwords, tabs and add-ons on your own hardware, encrypted by Firefox before upload, while you still sign in with a regular Mozilla account.",
   "install_methods": [
     {
       "type": "default",
@@ -34,24 +34,16 @@
   },
   "notes": [
     {
-      "text": "There is no web interface. In Firefox open about:config, set identity.sync.tokenserver.uri to http://<IP>:8000/1.0/sync/1.5, restart Firefox, then sign in to Sync. about:sync-log only lists failed syncs; set services.sync.log.appender.file.logOnSuccess to true to see successful ones too. Health check: http://<IP>:8000/__heartbeat__",
+      "text": "There is no web interface. Before signing in to Sync, set identity.sync.tokenserver.uri in about:config to http://<IP>:8000/1.0/sync/1.5 and restart Firefox.",
       "type": "info"
     },
     {
-      "text": "Sign-in still goes through your Mozilla account at accounts.firefox.com. Only the sync data is stored on this server.",
+      "text": "On Android, tap the logo in Settings > About Firefox until the debug menu appears, then set the custom Sync server there before signing in.",
       "type": "info"
     },
     {
-      "text": "Firefox syncs to the storage URL this server hands out, set by SYNC_TOKENSERVER__INIT_NODE_URL in /opt/firefox-syncserver_data/.env (default http://<IP>:8000). If you use HTTPS through a reverse proxy, or the container IP changes, set it to the public origin (e.g. https://sync.example.com), run systemctl restart firefox-syncserver and point identity.sync.tokenserver.uri at that origin.",
+      "text": "Behind an HTTPS reverse proxy or after an IP change, set SYNC_TOKENSERVER__INIT_NODE_URL in /opt/firefox-syncserver_data/.env to the new origin, restart firefox-syncserver and update the URL in Firefox.",
       "type": "warning"
-    },
-    {
-      "text": "Firefox for Android: in Settings > About Firefox tap the logo repeatedly to unlock the debug menu, set the custom Sync server to the same /1.0/sync/1.5 URL and stop Firefox from that menu. Do this before signing in.",
-      "type": "info"
-    },
-    {
-      "text": "Install and every update compile the server from source with Rust. The 3 GB RAM is sized for that build; the running server itself uses under 100 MB.",
-      "type": "info"
     }
   ]
 }

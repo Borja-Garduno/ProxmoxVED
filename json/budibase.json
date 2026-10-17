@@ -13,7 +13,7 @@
   "website": "https://budibase.com/",
   "repository": "https://github.com/Budibase/budibase",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/budibase.webp",
-  "description": "Budibase is a low-code platform for building internal tools: forms, portals, admin panels and approval apps on top of its built-in database or external sources such as PostgreSQL, MySQL, REST APIs and Google Sheets, plus automations triggered by events, schedules or webhooks. This script builds the app server and worker from source and runs them with CouchDB, Clouseau, SQS, Redis, Silo object storage and nginx, without Docker.",
+  "description": "Budibase is a low-code platform for building internal tools such as forms, portals, admin panels and approval apps. Apps run on its built-in database or on PostgreSQL, MySQL, REST APIs and Google Sheets, with automations triggered by events, schedules or webhooks.",
   "install_methods": [
     {
       "type": "default",
@@ -34,31 +34,15 @@
   },
   "notes": [
     {
-      "text": "There is no default account. Open http://<IP> right after the install and create the admin account on the setup page: until then anyone who reaches port 80 can claim it.",
+      "text": "There is no default account: create the admin on the setup page right after the install. Until then anyone who reaches port 80 can claim it.",
       "type": "warning"
     },
     {
-      "text": "Without a license key Budibase runs its free self-hosted plan: one workspace, unlimited users and rows, no user groups and no custom AI providers. The paid features live in the source-available @budibase/pro package (Business Source License) and are unlocked with a key from account.budibase.app.",
+      "text": "Without a license key Budibase runs the free self-hosted plan: one workspace, unlimited users and rows, no user groups and no custom AI providers.",
       "type": "info"
     },
     {
-      "text": "Budibase itself is GPLv3. Its internal tables are queried through SQS, a proprietary binary by The Neighbourhoodie Software that Budibase ships in every release and licenses for your own internal business use only (SQS_LICENSE in the repository).",
-      "type": "info"
-    },
-    {
-      "text": "The official image also bundles a LiteLLM proxy for AI agents and custom AI providers, which need a paid plan. It is not installed here; point LITELLM_URL and LITELLM_MASTER_KEY in /opt/budibase_data/.env at your own LiteLLM and run systemctl restart budibase-server to use one.",
-      "type": "info"
-    },
-    {
-      "text": "Install and every update download about 4 GB of npm packages and compile Budibase from source: expect 15 to 30 minutes, mostly downloading, up to about 3.3 GB of RAM and 9 GB of disk. The running stack uses about 2.5 GB of RAM.",
-      "type": "info"
-    },
-    {
-      "text": "Back up /opt/budibase_data as a whole: it holds the CouchDB databases, the object storage with uploads and app assets, the search and SQS indexes, and the .env whose JWT_SECRET, API_ENCRYPTION_KEY and ENCRYPTION_KEY sign sessions and encrypt API keys and stored secrets.",
-      "type": "warning"
-    },
-    {
-      "text": "Services: nginx on port 80 in front of budibase-server (4001) and budibase-worker (4002), plus couchdb, budibase-clouseau (search), budibase-sqs, budibase-silo (S3 object storage, a maintained MinIO fork) and redis-server.",
+      "text": "AI agents and custom AI providers also need your own LiteLLM proxy: set LITELLM_URL and LITELLM_MASTER_KEY in /opt/budibase_data/.env and run systemctl restart budibase-server.",
       "type": "info"
     }
   ]

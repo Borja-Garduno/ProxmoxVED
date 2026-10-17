@@ -17,7 +17,7 @@
     "website": "https://www.rocket.chat/",
     "repository": "https://github.com/RocketChat/Rocket.Chat",
     "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/rocket-chat.webp",
-    "description": "Rocket.Chat is an open-source communications platform for team chat, channels, direct messages, file sharing, voice and video calls, and omnichannel customer support. This script performs a manual (non-Docker) install of the official prebuilt Meteor server bundle, backed by a local MongoDB.",
+    "description": "Rocket.Chat is an open-source communications platform for team chat, channels, direct messages, file sharing, voice and video calls, and omnichannel customer support.",
     "install_methods": [
         {
             "type": "default",
@@ -47,28 +47,12 @@
     ],
     "notes": [
         {
-            "text": "Log in at http://IP:3000 as `admin`; the generated password is in `~/rocketchat.creds` inside the container. The setup wizard is skipped deliberately: its final step mails a confirmation code, and a fresh install has no mail server configured, so the wizard cannot be completed and would lock you out of the admin account it just created.",
+            "text": "Log in as `admin` with the generated password from `~/rocketchat.creds` in the container. Change it, and set a real admin email under Admin > Users if you kept admin@example.com.",
             "type": "info"
         },
         {
-            "text": "The admin password is generated, not chosen. Change it, and review the admin email, before real use. If you kept the default admin@example.com, set a real address in Admin > Users.",
-            "type": "warning"
-        },
-        {
-            "text": "The install downloads the official prebuilt server bundle (~250 MB) and compiles native npm modules, so it takes several minutes. The service needs roughly 20-30 seconds after start before the web UI answers.",
+            "text": "ROOT_URL in /etc/rocketchat/rocketchat.env is the container IP. Change it to the public URL and run `systemctl restart rocketchat` before using a domain or reverse proxy, or logins and uploads break.",
             "type": "info"
-        },
-        {
-            "text": "ROOT_URL in /etc/rocketchat/rocketchat.env is set to the container IP. Change it to the public URL and restart with `systemctl restart rocketchat` before putting Rocket.Chat behind a reverse proxy or domain, otherwise logins, uploads and OAuth redirects break.",
-            "type": "warning"
-        },
-        {
-            "text": "MongoDB runs as a single-node replica set (rs0), which Rocket.Chat 8.x requires: it dropped oplog tailing in 8.0 and relies on change streams and multi-document transactions. Do not convert mongod back to standalone.",
-            "type": "warning"
-        },
-        {
-            "text": "All chat data lives in the local MongoDB (database `rocketchat`, files in /var/lib/mongodb). Back that up together with /etc/rocketchat/rocketchat.env.",
-            "type": "warning"
         }
     ]
 }

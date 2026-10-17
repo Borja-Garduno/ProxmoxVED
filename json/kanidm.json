@@ -35,15 +35,15 @@
   },
   "notes": [
     {
-      "text": "Kanidm cannot run on a bare IP (WebAuthn/passkeys require a real domain name, and its domain must start with a letter). The script defaults the domain/origin to kanidm.<container-IP>.nip.io, a public wildcard DNS that resolves to the container automatically — just open https://kanidm.<container-IP>.nip.io:8443, no hosts file or DNS setup needed, and accept the self-signed certificate warning.",
+      "text": "Kanidm needs a domain name, not a bare IP. Open https://kanidm.<IP>.nip.io:8443 and accept the self-signed certificate.",
       "type": "info"
     },
     {
-      "text": "If your router/DNS has rebinding protection (blocks public names that resolve to private IPs), nip.io may not resolve. Fallback: add '<container-IP> kanidm.local' to your client's hosts file and set the matching domain/origin in /etc/kanidm/server.toml. To use your own real domain, change 'domain' and 'origin' in server.toml BEFORE creating accounts — changing it later requires a Kanidm domain rename.",
+      "text": "To use your own domain, or if your DNS blocks nip.io, set domain and origin in /etc/kanidm/server.toml before creating accounts. Changing them later needs a domain rename.",
       "type": "warning"
     },
     {
-      "text": "Generate the break-glass admin passwords after install, inside the container: 'kanidmd recover-account idm_admin' (manages people and groups — use this account to sign in to the web portal) and 'kanidmd recover-account admin' (manages server configuration).",
+      "text": "Create the admin passwords inside the container with kanidmd recover-account idm_admin (signs in to the web portal) and kanidmd recover-account admin.",
       "type": "info"
     }
   ]

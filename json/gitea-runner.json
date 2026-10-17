@@ -67,19 +67,11 @@
   ],
   "notes": [
     {
-      "text": "Supports both Debian 13 and Alpine 3.24. The installer prompts for the OS or accepts var_os=alpine / var_os=debian.",
+      "text": "Create a registration token in Gitea under Site Administration > Actions > Runners and enter it with your Gitea URL during setup, so the runner registers and starts on its own.",
       "type": "info"
     },
     {
-      "text": "To register the runner, obtain a registration token in Gitea under Site Administration > Actions > Runners, then run: `gitea-runner -c /etc/gitea-runner/config.yaml register --instance <URL> --token <TOKEN>`.",
-      "type": "info"
-    },
-    {
-      "text": "After registering, start the runner daemon service with `systemctl start gitea-runner` (Debian) or `rc-service gitea-runner start` (Alpine).",
-      "type": "info"
-    },
-    {
-      "text": "Docker is installed and enabled by default for containerized workflow execution. Ensure nested virtualization is enabled on the LXC.",
+      "text": "Skipped that step? Run the register command the install prints, then start the gitea-runner service.",
       "type": "info"
     }
   ]

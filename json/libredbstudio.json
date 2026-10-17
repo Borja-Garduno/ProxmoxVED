@@ -17,7 +17,7 @@
   "website": "https://libredb.org/",
   "repository": "https://github.com/libredb/libredb-studio",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/libredb-studio.webp",
-  "description": "LibreDB Studio is a browser-based SQL IDE you run on your own server. It connects to PostgreSQL, MySQL, SQLite, libSQL, DuckDB, Oracle, SQL Server, MongoDB, Redis, Couchbase, ClickHouse, Apache Druid, Elasticsearch, OpenSearch, Apache Trino and Apache Cassandra. Optional AI query assistance works with a local Ollama model, and read-only access is enforced by the database itself rather than by parsing SQL.",
+  "description": "LibreDB Studio is a browser-based SQL IDE you run on your own server. It connects to PostgreSQL, MySQL, SQLite, SQL Server, MongoDB, Redis, ClickHouse, Elasticsearch and many more databases, with optional AI query help from a local Ollama model.",
   "install_methods": [
     {
       "type": "default",

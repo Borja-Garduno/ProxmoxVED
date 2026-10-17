@@ -92,6 +92,7 @@ Browser APIs like `crypto.subtle` (Web Crypto / PKCE), `navigator.storage.getDir
 - `date_created` uses today's date (YYYY-MM-DD).
 - Resources in `install_methods` must match `var_*` values in the CT script.
 - Logo URL pattern: `https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/<slug>.webp`
+- Keep `notes` short: at most 3, one or two sentences each, only what the user must know or do (first login, a required manual step, a real risk). No install details, build times, RAM figures, update mechanics or upstream bugs. `description` is 2–3 sentences on what the app does, not what the script installs.
 
 **`repository`** — the upstream repo as a full URL:
 `https://github.com/owner/repo`, `https://gitlab.com/owner/repo`,
