@@ -13,8 +13,7 @@ setting_up_container
 network_check
 update_os
 
-msg_info "Installing Dependencies"
-$STD apt install -y \
+ensure_dependencies \
   xvfb \
   x11vnc \
   novnc \
@@ -28,7 +27,6 @@ $STD apt install -y \
   libmediainfo0v5 \
   fonts-dejavu-core \
   xz-utils
-msg_ok "Installed Dependencies"
 
 ASSET_PATH=$(curl -fsSL https://release.tinymediamanager.org/ |
   grep -oE "v5/dist/tinyMediaManager-[0-9.]+-linux-$(arch_resolve)\\.tar\\.xz" |
