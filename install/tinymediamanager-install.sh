@@ -58,7 +58,7 @@ cat <<'EOF' >/root/.config/openbox/rc.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_config xmlns="http://openbox.org/3.4/rc">
   <applications>
-    <application class="*">
+    <application type="normal">
       <maximized>true</maximized>
     </application>
   </applications>
