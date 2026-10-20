@@ -40,7 +40,7 @@
       "type": "info"
     },
     {
-      "text": "Portable layout: settings/library live under /opt/tinymediamanager (data/, backup/, …). Updates use create_backup/restore_backup around a clean deploy. Built-in auto-update is disabled; use the helper script.",
+      "text": "Portable layout: settings/library live under /opt/tinymediamanager (data/, backup/, …). Updates use create_backup/restore_backup around a clean deploy. Java heap defaults to -Xmx2048m in launcher-extra.yml (raise it there for very large libraries). Built-in auto-update is disabled; use the helper script.",
       "type": "info"
     }
   ]

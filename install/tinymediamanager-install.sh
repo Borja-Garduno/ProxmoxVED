@@ -42,6 +42,7 @@ msg_info "Configuring tinyMediaManager"
 cat <<EOF >/opt/tinymediamanager/launcher-extra.yml
 javaHome: ""
 jvmOpts:
+  - "-Xmx2048m"
   - "-Dtmm.noupdate=true"
   - "-Dtmm.legacy.filechooser=true"
 env:
