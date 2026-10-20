@@ -48,14 +48,19 @@ function update_script() {
   systemctl stop tinymediamanager x11vnc novnc
   msg_ok "Stopped tinyMediaManager"
 
-  create_backup /opt/tinymediamanager/data /opt/tinymediamanager/backup /opt/tinymediamanager/addons
+  create_backup \
+    /opt/tinymediamanager/data \
+    /opt/tinymediamanager/backup \
+    /opt/tinymediamanager/addons \
+    /opt/tinymediamanager/launcher-extra.yml
 
   CLEAN_INSTALL=1 fetch_and_deploy_from_url "${ASSET_URL}" /opt/tinymediamanager
   restore_backup
 
   rm -f /opt/tinymediamanager/.userdir
   chmod +x /opt/tinymediamanager/tinyMediaManager
-  cat <<EOF >/opt/tinymediamanager/launcher-extra.yml
+  if [[ ! -f /opt/tinymediamanager/launcher-extra.yml ]]; then
+    cat <<EOF >/opt/tinymediamanager/launcher-extra.yml
 javaHome: ""
 jvmOpts:
   - "-Dtmm.noupdate=true"
@@ -63,6 +68,7 @@ jvmOpts:
 env:
   - "_JAVA_AWT_WM_NONREPARENTING=1"
 EOF
+  fi
   echo "${VERSION}" >~/.tinymediamanager
 
   msg_info "Starting tinyMediaManager"
