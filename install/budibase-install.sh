@@ -64,7 +64,7 @@ msg_ok "Installed Apache CouchDB"
 
 # Budibase's database image pins Clouseau 2.25.0 on Java 8; 3.x needs Java 21 and a different config format
 fetch_and_deploy_gh_release "clouseau" "cloudant-labs/clouseau" "prebuild" "2.25.0" "/opt/clouseau" "clouseau-2.25.0-dist.zip"
-fetch_and_deploy_gh_release "silo" "pgsty/silo" "prebuild" "latest" "/opt/silo" "silo_*_linux_$(arch_resolve).tar.gz"
+fetch_and_deploy_gh_release "silo_s3" "pgsty/silo" "prebuild" "latest" "/opt/silo" "silo_*_linux_$(arch_resolve).tar.gz"
 fetch_and_deploy_gh_release "budibase" "Budibase/budibase" "tarball"
 
 msg_info "Building Budibase"

@@ -32,12 +32,13 @@ function update_script() {
     exit
   fi
 
-  if check_for_gh_release "silo" "pgsty/silo"; then
+  [[ -f ~/.silo ]] && mv ~/.silo ~/.silo_s3
+  if check_for_gh_release "silo_s3" "pgsty/silo"; then
     msg_info "Stopping Budibase Silo"
     systemctl stop budibase-silo
     msg_ok "Stopped Budibase Silo"
 
-    CLEAN_INSTALL=1 fetch_and_deploy_gh_release "silo" "pgsty/silo" "prebuild" "latest" "/opt/silo" "silo_*_linux_$(arch_resolve).tar.gz"
+    CLEAN_INSTALL=1 fetch_and_deploy_gh_release "silo_s3" "pgsty/silo" "prebuild" "latest" "/opt/silo" "silo_*_linux_$(arch_resolve).tar.gz"
 
     msg_info "Starting Budibase Silo"
     systemctl start budibase-silo
