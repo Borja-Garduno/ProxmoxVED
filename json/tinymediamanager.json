@@ -16,7 +16,7 @@
     {
       "type": "default",
       "script": "ct/tinymediamanager.sh",
-      "config_path": "/opt/tinymediamanager_data",
+      "config_path": "/opt/tinymediamanager/data",
       "resources": {
         "cpu": 4,
         "ram": 4096,
@@ -40,7 +40,7 @@
       "type": "info"
     },
     {
-      "text": "App data lives in /opt/tinymediamanager_data (-Dtmm.contentfolder) so CLEAN_INSTALL updates can replace /opt/tinymediamanager without wiping settings or the library. Built-in auto-update is disabled; use the helper script.",
+      "text": "Portable layout: settings/library live under /opt/tinymediamanager (data/, backup/, …). Updates use create_backup/restore_backup around a clean deploy. Built-in auto-update is disabled; use the helper script.",
       "type": "info"
     }
   ]

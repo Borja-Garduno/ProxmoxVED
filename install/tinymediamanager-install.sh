@@ -38,13 +38,12 @@ VERSION=$(basename "${ASSET_PATH}" | grep -oE '[0-9]+(\.[0-9]+)+')
 
 fetch_and_deploy_from_url "${ASSET_URL}" /opt/tinymediamanager
 chmod +x /opt/tinymediamanager/tinyMediaManager
+rm -f /opt/tinymediamanager/.userdir
 
 msg_info "Configuring tinyMediaManager"
-mkdir -p /opt/tinymediamanager_data
 cat <<EOF >/opt/tinymediamanager/launcher-extra.yml
 javaHome: ""
 jvmOpts:
-  - "-Dtmm.contentfolder=/opt/tinymediamanager_data"
   - "-Dtmm.noupdate=true"
   - "-Dtmm.legacy.filechooser=true"
 env:
