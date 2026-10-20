@@ -31,7 +31,7 @@ $STD apt install -y \
 msg_ok "Installed Dependencies"
 
 ASSET_PATH=$(curl -fsSL https://release.tinymediamanager.org/ |
-  grep -oE "v5/dist/tinyMediaManager-[0-9.]+-linux-$(arch_resolve amd64 arm64)\\.tar\\.xz" |
+  grep -oE "v5/dist/tinyMediaManager-[0-9.]+-linux-$(arch_resolve)\\.tar\\.xz" |
   head -1)
 ASSET_URL="https://release.tinymediamanager.org/${ASSET_PATH}"
 VERSION=$(basename "${ASSET_PATH}" | grep -oE '[0-9]+(\.[0-9]+)+')
