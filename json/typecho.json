@@ -17,7 +17,7 @@
   "website": "https://typecho.org/",
   "repository": "https://github.com/typecho/typecho",
   "logo": "https://avatars.githubusercontent.com/u/2030842?v=4",
-  "description": "Typecho is a lightweight, open-source PHP blogging platform with a Markdown editor, pages, categories and tags, threaded comments, themes, plugins and an XML-RPC API for desktop and mobile editors. This script installs the official release with nginx, PHP-FPM and SQLite and completes the setup with upstream's command-line installer, so no setup page is ever left open.",
+  "description": "Typecho is a lightweight, open-source PHP blogging platform with a Markdown editor, pages, categories and tags, threaded comments, themes, plugins and an XML-RPC API for desktop and mobile editors.",
   "install_methods": [
     {
       "type": "default",
@@ -53,23 +53,15 @@
   ],
   "notes": [
     {
-      "text": "The admin password is generated during install and shown at the end of the install output, together with the username. Log in at http://<IP>/admin/ and replace the placeholder email address admin@localhost.local in your profile.",
+      "text": "After the first login at http://<IP>/admin/, replace the placeholder email address admin@localhost.local in your profile.",
       "type": "info"
     },
     {
-      "text": "The site address is set to http://<container IP>, and Typecho builds every link from it. Change it under Settings > Basic when the IP changes or the blog sits behind a reverse proxy or domain.",
-      "type": "warning"
-    },
-    {
-      "text": "Everything that is not core code lives in /opt/typecho_data: config.inc.php, the SQLite database typecho.db, and usr/ with themes, plugins and uploads. /opt/typecho/usr and /opt/typecho/config.inc.php are links into it. Back up /opt/typecho_data.",
+      "text": "Typecho builds every link from the site address http://<container IP>. Change it under Settings > Basic when the IP changes or the blog sits behind a reverse proxy or domain.",
       "type": "info"
     },
     {
-      "text": "Updates replace only the core files, as upstream's upgrade guide does, and leave usr/ alone: the bundled themes are not refreshed, and edits made with the theme editor survive. After an update, open /admin/ and confirm the database upgrade Typecho asks for.",
-      "type": "info"
-    },
-    {
-      "text": "The interface is set to English using the language pack from typecho/languages, the timezone to UTC instead of upstream's UTC+8, and pretty URLs without index.php are on. All three can be changed in the settings.",
+      "text": "After an update, open /admin/ and confirm the database upgrade Typecho asks for.",
       "type": "info"
     }
   ]

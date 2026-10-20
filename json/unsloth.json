@@ -15,7 +15,7 @@
   "documentation": "https://unsloth.ai/docs/new/studio",
   "website": "https://unsloth.ai/",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/unsloth.webp",
-  "description": "Unsloth Studio is a local web UI for running and fine-tuning language models. It can search, download and serve GGUF, LoRA and safetensors models, compare two models side by side, export to other formats, and expose OpenAI- and Anthropic-compatible endpoints so local models can be used from Claude Code, Codex and similar tools. Fine-tuning with LoRA is configured entirely through the UI.",
+  "description": "Unsloth Studio is a local web UI for running and fine-tuning language models. It downloads and serves GGUF, LoRA and safetensors models, compares models side by side, and exposes OpenAI- and Anthropic-compatible endpoints for tools like Claude Code and Codex.",
   "install_methods": [
     {
       "type": "default",
@@ -36,19 +36,15 @@
   },
   "notes": [
     {
-      "text": "Log in as the user 'unsloth'; the generated password is in ~/unsloth.creds inside the container. Rotate it with 'unsloth studio reset-password', which prints a new one and needs no restart.",
+      "text": "Log in as unsloth with the password from ~/unsloth.creds in the container. To change it, run unsloth studio reset-password, which prints a new one.",
       "type": "info"
     },
     {
-      "text": "Fine-tuning requires an NVIDIA GPU. Without one, inference, model management, export and the OpenAI-compatible API work, but training does not. Select GPU passthrough when creating the container; the matching driver libraries are installed automatically.",
-      "type": "warning"
-    },
-    {
-      "text": "Models and Hugging Face caches land in /opt/unsloth_data, which fills up quickly - a single 7B model at Q4 is roughly 4 GB. Give the container more disk if you plan to keep several, and back that directory up rather than /opt/unsloth.",
+      "text": "Fine-tuning needs an NVIDIA GPU passed through to the container; without one, inference and export still work. After adding or changing a GPU, run the update to get matching builds.",
       "type": "info"
     },
     {
-      "text": "The Unsloth installer picks the PyTorch and llama.cpp builds for the GPU it finds (CUDA, ROCm, Intel or CPU). Run the update after adding or changing a GPU so the matching builds are installed.",
+      "text": "Models are stored in /opt/unsloth_data and fill the disk fast (a 7B model at Q4 is about 4 GB). Add disk space if you plan to keep several.",
       "type": "info"
     }
   ]

@@ -38,19 +38,15 @@
   },
   "notes": [
     {
-      "text": "On first visit Mathesar asks you to create the admin account. The two analytics checkboxes on that page (installation confirmation and anonymous usage data) are enabled by default; untick them if you do not want to share data.",
+      "text": "The first visit asks you to create the admin account. Its two analytics checkboxes are ticked by default; untick them if you do not want to share usage data.",
       "type": "info"
     },
     {
-      "text": "The bundled PostgreSQL server holds Mathesar's internal database (mathesar_django), which cannot itself be used for your data. Use 'Create a new database' to store data in this container (the mathesar role may create databases), or 'Connect to an existing database' with the host, port and credentials of any other PostgreSQL 14+ server.",
+      "text": "The bundled PostgreSQL only holds Mathesar's own database. Choose 'Create a new database' for your data, or connect to an existing PostgreSQL 14+ server.",
       "type": "info"
     },
     {
-      "text": "Settings live in /opt/mathesar_data/.env, including SECRET_KEY, which encrypts the saved database passwords: keep it and back it up with the PostgreSQL databases. Add variables from https://docs.mathesar.org/administration/environment-variables/ there, then run `systemctl restart mathesar`.",
-      "type": "warning"
-    },
-    {
-      "text": "ALLOWED_HOSTS is * so the container IP works out of the box. Behind a reverse proxy, restrict it to your domain(s) and forward the Host and X-Forwarded-Proto headers.",
+      "text": "Behind a reverse proxy, set ALLOWED_HOSTS in /opt/mathesar_data/.env to your domain instead of * and forward the Host and X-Forwarded-Proto headers.",
       "type": "info"
     }
   ]

@@ -16,7 +16,7 @@
     "amd64"
   ],
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/windmill.webp",
-  "description": "Windmill is an open-source developer platform that turns scripts into webhooks, workflows and UIs. Scripts in Python, TypeScript, Bash, SQL and other languages get an auto-generated form and API, can be chained into flows with branches, loops, retries and approval steps, run on schedules or from webhooks and other triggers, and back low-code apps. This script runs the Community Edition binary in standalone mode (server and worker in one process) with PostgreSQL.",
+  "description": "Windmill is an open-source developer platform that turns scripts into webhooks, workflows and UIs. Scripts in Python, TypeScript, Bash, SQL and more get an auto-generated form and API, and can be chained into flows, run on schedules or triggers, and back low-code apps.",
   "install_methods": [
     {
       "type": "default",
@@ -37,23 +37,15 @@
   },
   "notes": [
     {
-      "text": "Log in with admin@windmill.dev / changeme right after the install. Windmill then asks for a new superadmin account, which replaces the default one. Until you do that, anyone who reaches port 8000 can log in with the default credentials.",
+      "text": "Log in with the default credentials right away: Windmill then asks for a new superadmin account. Until then, anyone who reaches port 8000 can log in.",
       "type": "warning"
     },
     {
-      "text": "Webhook URLs, OAuth redirects and links in emails are built from BASE_URL in /opt/windmill_data/.env, which points at the container IP. Change it when the IP changes or Windmill sits behind a reverse proxy or domain, then run systemctl restart windmill. A Base URL set in the instance settings takes precedence.",
+      "text": "Webhook URLs and OAuth redirects are built from BASE_URL in /opt/windmill_data/.env. Update it after an IP change or behind a reverse proxy or domain, then restart windmill.",
       "type": "info"
     },
     {
-      "text": "Python (through uv, which downloads the Python version on first use), TypeScript on Bun, Bash, DuckDB and SQL scripts run out of the box. The other languages the editor offers (TypeScript on Deno, Go, PHP, PowerShell, Rust, C#, Java, Ansible and more) need their runtime installed in the container first.",
-      "type": "info"
-    },
-    {
-      "text": "Server and worker share one process with a single worker, so jobs run one at a time. For parallel jobs, run more Windmill processes with MODE=worker against the same database.",
-      "type": "info"
-    },
-    {
-      "text": "The windmill database role has no CREATEDB or CREATEROLE privilege, so the Custom instance database option for Data Tables and DuckLake fails with permission denied. Point Data Tables at a PostgreSQL resource instead.",
+      "text": "Python, TypeScript on Bun, Bash, DuckDB and SQL work out of the box. Other languages need their runtime installed in the container first.",
       "type": "info"
     }
   ]

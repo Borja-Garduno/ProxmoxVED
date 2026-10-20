@@ -36,12 +36,12 @@
   },
   "notes": [
     {
-      "text": "Default settings use Debian 13; Advanced settings offer other Debian/Ubuntu cloud images. The AIO master container is started by the nextcloud-aio.service first-boot unit (log: /var/log/nextcloud-aio.log); if Docker cannot be pre-installed, install-docker.service runs first. Finish the setup at https://<VM-IP>:8080; the AIO password is printed with `docker exec nextcloud-aio-mastercontainer grep password /mnt/docker-aio-config/data/configuration.json`.",
-      "type": "info"
+      "text": "Nextcloud AIO needs a domain with a valid certificate and does not work on a bare IP. For a VM that works on an IP straight away, use the TurnKey-based nextcloud-vm instead.",
+      "type": "warning"
     },
     {
-      "text": "Nextcloud AIO requires a domain with a valid certificate and does not work on a bare IP. Point the domain at the VM and open 80/tcp and 443/tcp, or follow the AIO local-instance guide for a LAN-only setup. For a VM that works on an IP address straight away, use the TurnKey-based nextcloud-vm instead.",
-      "type": "warning"
+      "text": "Finish the setup at https://<VM-IP>:8080 with the AIO password: `docker exec nextcloud-aio-mastercontainer grep password /mnt/docker-aio-config/data/configuration.json`",
+      "type": "info"
     },
     {
       "text": "If you use Cloud-init, checkout cloud-init discussion: `https://github.com/community-scripts/ProxmoxVE/discussions/272`",

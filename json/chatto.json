@@ -14,7 +14,7 @@
     "website": "https://chatto.run",
     "repository": "https://github.com/chattocorp/chatto",
     "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/chatto.webp",
-    "description": "Chatto is a fully-featured, privacy-first team and group chat application that is free and easy to self-host. It ships as a single binary with an embedded NATS/JetStream store (no external database) and supports voice/video calls and screensharing via an optional LiveKit server.",
+    "description": "Chatto is a privacy-first team and group chat app built for self-hosting. It runs as a single binary with an embedded NATS/JetStream store, so it needs no external database, and supports voice and video calls and screensharing through an optional LiveKit server.",
     "install_methods": [
         {
             "type": "default",
@@ -35,23 +35,15 @@
     },
     "notes": [
         {
-            "text": "Create the first account with `cd /opt/chatto && ./chatto operator user create --login <yourname>` (the operator API is enabled by default), or register via the web UI at http://IP:4000. Pick your own login: root, admin, superuser, op, operator and support are blocked by default and fail with 'this username is not available'.",
+            "text": "Register the first account in the web UI, or run cd /opt/chatto && ./chatto operator user create --login <name>. Logins such as root, admin, op and operator are blocked.",
             "type": "info"
         },
         {
-            "text": "Review /opt/chatto_data/chatto.toml and configure SMTP credentials and a public webserver.url before using Chatto in production.",
-            "type": "warning"
-        },
-        {
-            "text": "All persistent data (embedded NATS/JetStream store and chatto.toml with its secrets) lives in /opt/chatto_data, kept outside the app directory so it survives updates. Include /opt/chatto_data in regular backups.",
-            "type": "warning"
-        },
-        {
-            "text": "Uploads go through the embedded NATS/JetStream store, which gets slow with many or large files. Testers report it becomes noticeably more usable with more CPU cores assigned to the container.",
+            "text": "Set SMTP credentials and a public webserver.url in /opt/chatto_data/chatto.toml before using Chatto in production.",
             "type": "info"
         },
         {
-            "text": "Voice and video calls require a separately deployed LiveKit server; configure the [livekit] section in chatto.toml to enable them.",
+            "text": "Voice and video calls need a separately deployed LiveKit server, configured in the [livekit] section of chatto.toml.",
             "type": "info"
         }
     ]

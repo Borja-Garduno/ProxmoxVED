@@ -17,7 +17,7 @@
   "website": "https://github.com/bambanah/deemix",
   "repository": "https://github.com/bambanah/deemix",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/deemix.webp",
-  "description": "Deemix is a Deezer music downloader with a web interface. It searches the Deezer catalogue and downloads tracks, albums, playlists and artist discographies with tags and cover art, in MP3 or FLAC depending on the account. This is the maintained community fork by bambanah, which revived the discontinued original.",
+  "description": "Deemix is a Deezer music downloader with a web interface, in the maintained community fork by bambanah. It downloads tracks, albums, playlists and discographies from Deezer with tags and cover art, in MP3 or FLAC depending on the account.",
   "install_methods": [
     {
       "type": "default",
@@ -38,23 +38,15 @@
   },
   "notes": [
     {
-      "text": "Downloading requires the ARL cookie of your Deezer account. Log in at deezer.com in a browser, copy the value of the arl cookie from the developer tools (Application or Storage tab), then paste it in Deemix under Settings > Login > Log in with ARL. An ARL expires after about three months.",
+      "text": "Downloading needs your Deezer ARL: copy the arl cookie from deezer.com in your browser's developer tools and paste it under Settings > Login > Log in with ARL. It expires after about three months.",
       "type": "info"
     },
     {
-      "text": "Deemix has no login of its own, and the saved ARL is used for every visitor. Anyone who can reach port 6595 can download with your Deezer account, so keep it on a trusted network or behind an authenticating reverse proxy.",
+      "text": "Deemix has no login and uses the saved ARL for every visitor. Keep port 6595 on a trusted network or behind an authenticating reverse proxy.",
       "type": "warning"
     },
     {
-      "text": "Music is saved to /opt/deemix_data/music. To store it on a NAS or media share, bind-mount that share onto the same path, e.g. pct set <CTID> -mp0 /mnt/media/music,mp=/opt/deemix_data/music. In an unprivileged container the host directory must be writable by UID 100000.",
-      "type": "info"
-    },
-    {
-      "text": "Settings, the saved ARL and logs live in /opt/deemix_data/config, outside the app directory, so updates keep them.",
-      "type": "info"
-    },
-    {
-      "text": "Deemix downloads through your own Deezer account. Whether that is allowed depends on Deezer's terms of use and the law where you live.",
+      "text": "Music is saved to /opt/deemix_data/music. For a NAS, bind-mount the share there with pct set <CTID> -mp0; in an unprivileged container the host directory must be writable by UID 100000.",
       "type": "info"
     }
   ]

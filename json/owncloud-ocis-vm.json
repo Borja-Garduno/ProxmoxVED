@@ -37,15 +37,11 @@
   },
   "notes": [
     {
-      "text": "Default settings use Debian 13; Advanced settings offer other Debian/Ubuntu cloud images. The container is started by the owncloud-ocis.service first-boot unit (log: /var/log/owncloud-ocis.log); if Docker cannot be pre-installed, install-docker.service runs first. The admin password is generated (or taken from VM_OCIS_ADMIN_PASSWORD), shown at the end and saved to /tmp/<hostname>-<VMID>-ocis-credentials.txt on the Proxmox host.",
+      "text": "Log in as admin at https://<VM-IP>:9200 and accept the self-signed certificate. The generated password is shown at the end and saved to /tmp/<hostname>-<VMID>-ocis-credentials.txt on the Proxmox host.",
       "type": "info"
     },
     {
-      "text": "oCIS is published on https://<VM-IP>:9200 with a self-signed certificate and all links use the IP the VM has on first boot. Reserve the DHCP lease, or put a reverse proxy with a domain in front and set OCIS_URL in the container accordingly.",
-      "type": "warning"
-    },
-    {
-      "text": "For classic ownCloud 10 use the TurnKey-based owncloud-vm instead.",
+      "text": "All links use the IP the VM has on first boot. Reserve the DHCP lease, or put a reverse proxy with a domain in front and set OCIS_URL in the container.",
       "type": "info"
     },
     {

@@ -17,7 +17,7 @@
   "website": "https://hometube.latentnoise.dev/",
   "repository": "https://github.com/EgalitarianMonkey/hometube",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/hometube.webp",
-  "description": "HomeTube is a web UI for yt-dlp that downloads single videos or whole playlists into a clean folder structure for Plex, Jellyfin or Emby. It picks the best AV1/VP9 quality profile automatically, embeds subtitles, chapters and metadata, marks or removes sponsor segments with SponsorBlock, cuts clips, keeps playlists in sync and can trigger a Jellyfin library refresh after each download.",
+  "description": "HomeTube is a web UI for yt-dlp that downloads single videos or whole playlists into a clean folder structure for Plex, Jellyfin or Emby. It embeds subtitles, chapters and metadata, skips sponsor segments with SponsorBlock and keeps playlists in sync.",
   "install_methods": [
     {
       "type": "default",
@@ -38,23 +38,15 @@
   },
   "notes": [
     {
-      "text": "HomeTube has no login. Anyone who can reach port 8501 can download to your media folder, so keep it on a trusted network or put it behind a reverse proxy with authentication.",
+      "text": "HomeTube has no login. Anyone who reaches port 8501 can download to your media folder, so keep it on a trusted network or behind a reverse proxy with authentication.",
       "type": "warning"
     },
     {
-      "text": "Videos are saved to /opt/hometube_data/videos (VIDEOS_FOLDER), into the destination folder chosen in the UI; playlists get a folder of their own. To write straight into a Plex, Jellyfin or Emby library, bind-mount it there, e.g. pct set <CTID> -mp0 /mnt/media/youtube,mp=/opt/hometube_data/videos, then restart the container. In an unprivileged container the host folder must be writable by UID 100000.",
+      "text": "Videos are saved to /opt/hometube_data/videos. Bind-mount your Plex, Jellyfin or Emby library there to download straight into it.",
       "type": "info"
     },
     {
-      "text": "YouTube increasingly needs cookies, even for public videos. Export them with a cookies.txt browser extension and copy the file to /opt/hometube_data/cookies/youtube_cookies.txt, then reload the HomeTube page so it switches to file cookies.",
-      "type": "info"
-    },
-    {
-      "text": "Settings such as LANGUAGE_PRIMARY, VIDEO_QUALITY_MAX, YTDLP_CUSTOM_ARGS or JELLYFIN_BASE_URL/JELLYFIN_API_KEY go in /opt/hometube_data/.env, then run systemctl restart hometube. Temporary files are removed after each download (REMOVE_TMP_FILES_AFTER_DOWNLOAD=true) so videos are not stored twice; set it to false to keep them as a re-download cache.",
-      "type": "info"
-    },
-    {
-      "text": "yt-dlp updates itself on every HomeTube restart and with every update run, since YouTube breaks older versions regularly. YouTube challenges are solved with the installed deno.",
+      "text": "YouTube often needs cookies, even for public videos. Export a cookies.txt from your browser to /opt/hometube_data/cookies/youtube_cookies.txt and reload the page.",
       "type": "info"
     }
   ]

@@ -93,19 +93,15 @@
   ],
   "notes": [
     {
-      "text": "Select NVIDIA GPU passthrough at container creation. vLLM installs the CUDA build by default and requires an NVIDIA GPU for usable performance; CPU-only inference is impractically slow.",
+      "text": "Without an API key the API accepts requests from anyone. Set VLLM_API_KEY in /opt/vllm/vllm.env (clients send it as a bearer token) and run systemctl restart vllm.",
       "type": "warning"
     },
     {
-      "text": "Model, port, dtype, VRAM share and HuggingFace token can be chosen up front in the script generator; they are written to /opt/vllm/vllm.env. Restart the service after changing the file: systemctl restart vllm",
+      "text": "Pass a GPU through when creating the container. CPU-only inference is impractically slow.",
       "type": "info"
     },
     {
-      "text": "Flags not covered by a field go into VLLM_SERVE_ARGS in /opt/vllm/vllm.env, which is appended to 'vllm serve' verbatim.",
-      "type": "info"
-    },
-    {
-      "text": "The configured model is downloaded from HuggingFace on first service start, which needs internet access and disk space. For gated/private models set HF_TOKEN in /opt/vllm/vllm.env. Resource needs scale heavily with the chosen model.",
+      "text": "The model downloads from HuggingFace on first start. Change it, HF_TOKEN (gated models) or extra flags (VLLM_SERVE_ARGS) in /opt/vllm/vllm.env, then run systemctl restart vllm.",
       "type": "info"
     }
   ]

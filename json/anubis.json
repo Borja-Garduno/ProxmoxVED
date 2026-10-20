@@ -41,19 +41,15 @@
   ],
   "notes": [
     {
-      "text": "Set TARGET in /etc/anubis/main.env to the service you want to protect, then run `systemctl restart anubis@main`. Point your reverse proxy or DNS at this container on port 8923.",
-      "type": "warning"
-    },
-    {
-      "text": "The container is configured for direct exposure over plain HTTP (COOKIE_SECURE=false, USE_REMOTE_ADDRESS=true). When you put a TLS reverse proxy in front of it, set COOKIE_SECURE=true and remove USE_REMOTE_ADDRESS so client IPs come from X-Forwarded-For.",
+      "text": "Anubis forwards to TARGET in /etc/anubis/main.env. Set it to the service you want to protect, run systemctl restart anubis@main and point your reverse proxy or DNS at port 8923.",
       "type": "info"
     },
     {
-      "text": "One Anubis instance protects one TARGET. For another service, copy /etc/anubis/main.env to /etc/anubis/<name>.env with its own BIND, METRICS_BIND and TARGET and run `systemctl enable --now anubis@<name>`. Alternatively point TARGET at a reverse proxy that routes by Host header and a single instance covers all its sites.",
+      "text": "Behind a TLS reverse proxy, set COOKIE_SECURE=true and remove USE_REMOTE_ADDRESS in main.env so client IPs come from X-Forwarded-For.",
       "type": "info"
     },
     {
-      "text": "Bot policies live in /etc/anubis/main.botPolicies.yaml (a copy of the upstream default). Prometheus metrics are exposed on port 9090.",
+      "text": "One instance protects one TARGET. For another service, copy main.env to /etc/anubis/<name>.env with its own BIND, METRICS_BIND and TARGET, then run systemctl enable --now anubis@<name>.",
       "type": "info"
     }
   ]

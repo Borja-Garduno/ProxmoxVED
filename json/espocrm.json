@@ -35,16 +35,12 @@
   },
   "notes": [
     {
-      "text": "The admin login (username and password) and the database credentials are saved to `~/espocrm.creds` inside the container. Change the admin password after first login.",
+      "text": "The admin login is saved to ~/espocrm.creds inside the container.",
       "type": "info"
     },
     {
-      "text": "The site URL is set to the container's IP at install time. If the IP changes or you put EspoCRM behind a domain or reverse proxy, update it under Administration > Settings > Site URL, or run `php /opt/espocrm/bin/command config:set siteUrl https://crm.example.com`.",
+      "text": "If the IP changes or EspoCRM sits behind a domain or reverse proxy, update the site URL under Administration > Settings.",
       "type": "info"
-    },
-    {
-      "text": "Take a Proxmox snapshot before updating: updates replace the application code and run database migrations, which cannot be rolled back.",
-      "type": "warning"
     }
   ],
   "app_vars": [

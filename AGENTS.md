@@ -1676,6 +1676,13 @@ produces a generated command that looks right and changes nothing.
 
 **Note types:** `info`, `warning`, `error`
 
+**Keep notes short.** The script page shows every note; a wall of text gets skipped.
+
+- At most 3 notes, one or two short sentences each (about 200 characters).
+- Only what a user has to know or do: how to get the first login, a required manual step (API key, reverse proxy, HTTPS), a real risk (open signup, no auth).
+- Leave out what the script installs, build times, RAM measurements, update mechanics, upstream bugs, data paths the user never has to touch, and anything the description or the CT script's final message already says.
+- `description` says what the app is and what it can do in 2–3 sentences (up to about 400 characters), not what the script installs.
+
 ### Examples with Credentials
 
 ```json

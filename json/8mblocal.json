@@ -16,7 +16,7 @@
     "amd64"
   ],
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/8mb-local.webp",
-  "description": "8mb.local is a self-hosted video compressor inspired by 8mb.video. Drop in a video, pick a target size such as 8, 25 or 50 MB, and it calculates the bitrate and encodes to H.264, HEVC or AV1, with NVIDIA NVENC, Intel Quick Sync, VAAPI or CPU encoders, live progress, trimming, batch uploads, presets and a watched folder. This script builds the FastAPI backend, Celery worker and SvelteKit UI from source and runs them with Redis and FFmpeg.",
+  "description": "8mb.local is a self-hosted video compressor inspired by 8mb.video, free for non-commercial use (CC BY-NC 4.0). Pick a target size such as 8, 25 or 50 MB and it works out the bitrate and encodes to H.264, HEVC or AV1, on the CPU or with NVENC, Quick Sync or VAAPI.",
   "install_methods": [
     {
       "type": "default",
@@ -37,24 +37,16 @@
   },
   "notes": [
     {
-      "text": "The UI and API are protected by HTTP Basic auth. The user is admin, the generated password is AUTH_PASS in /opt/8mblocal_data/.env. It can be changed or switched off under Settings, Authentication.",
+      "text": "The UI is behind HTTP Basic auth: user admin, password AUTH_PASS in /opt/8mblocal_data/.env. Change it under Settings > Authentication.",
       "type": "info"
     },
     {
-      "text": "Uploads and compressed results are deleted after 1 hour, checked every 15 minutes. Download results right away, or raise the retention under Settings. Both live in /opt/8mblocal_data, so give the disk room for the largest video you compress.",
+      "text": "Uploads and results are deleted after 1 hour. Download results right away or raise the retention under Settings.",
       "type": "warning"
     },
     {
-      "text": "Hardware encoding needs GPU passthrough. Intel Quick Sync, Intel and AMD VAAPI and NVIDIA NVENC are probed when the worker starts and only offered when a test encode passes; the CPU encoders x264, x265 and SVT-AV1 always work. For NVENC the NVIDIA libraries in the container must match the host driver version.",
+      "text": "Hardware encoders are only offered when a test encode passes at startup. For NVENC, the NVIDIA libraries in the container must match the host driver version.",
       "type": "info"
-    },
-    {
-      "text": "Uploads are written to disk (MEDIA_STORAGE=disk in /opt/8mblocal_data/.env). Upstream defaults to auto, which stages uploads in /dev/shm and counts them against the container RAM.",
-      "type": "info"
-    },
-    {
-      "text": "8mb.local is licensed CC BY-NC 4.0: free for personal use, not for commercial use.",
-      "type": "warning"
     }
   ]
 }

@@ -16,7 +16,7 @@
   "website": "https://github.com/ggml-org/llama.cpp",
   "repository": "https://github.com/ggml-org/llama.cpp",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/llama-cpp.webp",
-  "description": "llama.cpp runs GGUF language models directly in C/C++ with no Python runtime. This installs llama-server, which serves a built-in web chat UI plus an OpenAI-compatible API on the same port, so it can back tools like AnythingLLM, Open WebUI or Claude Code. Lighter and closer to the metal than Ollama.",
+  "description": "llama.cpp runs GGUF language models directly in C/C++ with no Python runtime. Its llama-server offers a built-in web chat and an OpenAI-compatible API, so it can back tools like AnythingLLM, Open WebUI or Claude Code.",
   "install_methods": [
     {
       "type": "default",
@@ -43,17 +43,22 @@
       "options": [
         "auto",
         "cpu",
-        "vulkan"
+        "vulkan",
+        "cuda",
+        "rocm",
+        "sycl-fp16",
+        "sycl-fp32",
+        "openvino"
       ],
       "default": "auto",
-      "help": "auto takes vulkan for any passed-through GPU (AMD via RADV, NVIDIA and Intel too), cpu otherwise. Upstream ships no Linux ROCm or CUDA build."
+      "help": "auto takes vulkan for any passed-through GPU, cpu otherwise. cuda picks the CUDA 12 or 13 build from the host driver; rocm, sycl-fp16/fp32 and openvino are x64 only."
     },
     {
       "name": "var_model_repo",
       "label": "Model Repository",
       "type": "text",
-      "default": "ggml-org/gemma-3-1b-it-GGUF",
-      "help": "GGUF repo on HuggingFace, downloaded on first service start"
+      "default": "ggml-org/gemma-4-E2B-it-GGUF:Q4_0",
+      "help": "GGUF repo on HuggingFace, optionally with :QUANT, downloaded on first service start"
     },
     {
       "name": "var_ctx_size",
@@ -92,19 +97,15 @@
   ],
   "notes": [
     {
-      "text": "On first start llama-server downloads the model set in LLAMA_ARG_HF_REPO (default: ggml-org/gemma-3-1b-it-GGUF, roughly 800 MB) into /opt/llama-cpp_data/models, so the container is usable straight away. Swap it for any GGUF repo, or point LLAMA_ARG_MODEL at a local file, then restart.",
-      "type": "info"
-    },
-    {
-      "text": "The web UI and the OpenAI-compatible API share port 8080: /v1/chat/completions, /v1/models and friends. There is no authentication unless an API key is set - supply one at install time or set LLAMA_ARG_API_KEY in /opt/llama-cpp.env.",
+      "text": "The web UI and the API have no authentication unless you set an API key at install time or LLAMA_ARG_API_KEY in /opt/llama-cpp.env.",
       "type": "warning"
     },
     {
-      "text": "The build variant is chosen at install time: cpu or vulkan, or auto to follow the passed-through GPU. Upstream publishes no Linux CUDA or ROCm build, so every GPU is served by the vulkan build - AMD through RADV, NVIDIA through the driver's Vulkan ICD, which has to be present in the container. The choice is remembered in /opt/llama-cpp_data/.backend so updates keep it.",
+      "text": "The first start downloads gemma-4-E2B-it Q4_0 (about 3.5 GB). Set LLAMA_ARG_HF_REPO to another GGUF repo, or LLAMA_ARG_MODEL to a local file, then run systemctl restart llama-cpp.",
       "type": "info"
     },
     {
-      "text": "RAM is the limiting factor: the model must fit alongside the KV cache. 8 GB comfortably runs models up to roughly 7B at Q4. Raise LLAMA_ARG_CTX_SIZE only if you have headroom.",
+      "text": "Pick the build with var_backend: Vulkan works on any GPU, or use CUDA, ROCm, SYCL or OpenVINO. NVIDIA on Vulkan needs the driver's Vulkan libraries in the container.",
       "type": "info"
     }
   ]

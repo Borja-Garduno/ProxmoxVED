@@ -35,19 +35,7 @@
   },
   "notes": [
     {
-      "text": "Create admin account with: cd /opt/pixelfed && sudo -u pixelfed php artisan user:create",
-      "type": "warning"
-    },
-    {
-      "text": "Credentials are stored in /opt/pixelfed/.env",
-      "type": "info"
-    },
-    {
-      "text": "ActivityPub federation is enabled by default",
-      "type": "info"
-    },
-    {
-      "text": "Uses PostgreSQL, Redis (socket), and PHP-FPM",
+      "text": "There is no default account. Create the admin with: cd /opt/pixelfed && sudo -u pixelfed php artisan user:create",
       "type": "info"
     }
   ]

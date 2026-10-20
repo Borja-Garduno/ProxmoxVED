@@ -34,23 +34,11 @@
   },
   "notes": [
     {
-      "text": "The instance is open to anyone who can reach it. If it is exposed beyond your LAN, uncomment ACCESS_KEY in /opt/rsshub.env and append ?key=... to your feed URLs, otherwise strangers can use your server to scrape third-party sites.",
+      "text": "The instance is open to anyone who can reach it. Before exposing it, uncomment ACCESS_KEY in /opt/rsshub.env, restart rsshub and add ?key=... to your feed URLs, or strangers can use it to scrape other sites.",
       "type": "warning"
     },
     {
-      "text": "Caching goes to the local Redis with a 300 second expiry. Many routes scrape HTML, so a short cache means more requests to the target site and a higher chance of being rate-limited or blocked - raise CACHE_EXPIRE if a route starts failing.",
-      "type": "info"
-    },
-    {
-      "text": "Routes that need credentials (some social networks) are configured through additional environment variables in /opt/rsshub.env - see the route documentation upstream.",
-      "type": "info"
-    },
-    {
-      "text": "Routes that render the page in a browser use Debian's chromium (CHROMIUM_EXECUTABLE_PATH in /opt/rsshub.env). Sites with bot protection can still block them; such routes fail with a 503 that names the cause.",
-      "type": "info"
-    },
-    {
-      "text": "The build is a large TypeScript project and takes several minutes; 4 GB RAM is the practical minimum for it to complete.",
+      "text": "Routes that need credentials (some social networks) take extra variables in /opt/rsshub.env; see the upstream route documentation.",
       "type": "info"
     }
   ]

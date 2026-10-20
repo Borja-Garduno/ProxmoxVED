@@ -17,7 +17,7 @@
     "arm64"
   ],
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/ideon.webp",
-  "description": "Ideon is a self-hosted visual workspace that maps a project on an infinite canvas. Notes, files, links, tasks, kanban boards, sketches and live Git repository blocks (GitHub, GitLab, Gitea, Forgejo) sit side by side, are edited together in real time and can be rewound to earlier snapshots. This script builds Ideon from source and runs it with PostgreSQL.",
+  "description": "Ideon is a self-hosted visual workspace that maps a project on an infinite canvas. Notes, files, links, tasks, kanban boards, sketches and live Git repository blocks sit side by side, are edited together in real time and can be rewound to earlier snapshots.",
   "install_methods": [
     {
       "type": "default",
@@ -38,27 +38,15 @@
   },
   "notes": [
     {
-      "text": "There is no default account. The first visit to http://<IP>:3000 opens the setup page that creates the super-admin; anyone who reaches the port can claim it until then, so finish the setup right after the install. Public registration is off afterwards, further users are invited from the Team page.",
+      "text": "There is no default account: the first visit opens the setup page that creates the super-admin. Finish it right after the install.",
       "type": "warning"
     },
     {
-      "text": "Redirects, invitation and share links are built from APP_URL in /opt/ideon_data/.env, which points at the container IP. Change it when the IP changes or Ideon sits behind a reverse proxy or domain, then run systemctl restart ideon.",
+      "text": "Links and redirects use APP_URL in /opt/ideon_data/.env. Change it behind a reverse proxy or after an IP change, add the SMTP_* values for email, then run systemctl restart ideon.",
       "type": "info"
     },
     {
-      "text": "Back up SECRET_KEY from /opt/ideon_data/.env together with the database and /opt/ideon_data/storage (uploads, avatars and the canvas documents). Sessions and encrypted values such as Git tokens depend on it.",
-      "type": "warning"
-    },
-    {
-      "text": "Ideon connects to PostgreSQL as a regular role that is subject to its row-level security, unlike the upstream Docker setup whose database user is a superuser. Canvases, blocks, files and collaboration work, but a few features expect to bypass it: Shell blocks are refused, MCP/API-key clients and access requests to other users' projects report the project as missing, and the admin audit log only lists the admin's own entries.",
-      "type": "info"
-    },
-    {
-      "text": "Install and every update build Ideon from source (Next.js), which takes about 10 minutes on 2 cores and needs the 4 GB of RAM. The running app uses around 300 MB, so the RAM can be lowered after the install and raised again before an update.",
-      "type": "info"
-    },
-    {
-      "text": "Email (invitations, password reset, magic links) needs the SMTP_* values in /opt/ideon_data/.env, followed by systemctl restart ideon.",
+      "text": "Shell blocks, MCP and API-key clients, and access requests to other users' projects do not work here, as the database user is not a superuser like in upstream's Docker setup.",
       "type": "info"
     }
   ]
