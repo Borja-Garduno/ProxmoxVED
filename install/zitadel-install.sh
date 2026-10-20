@@ -112,7 +112,7 @@ EOF
 systemctl enable -q --now zitadel
 msg_ok "Created Service"
 
-if [[ "$var_zitadel_login" == "v2" ]]; then
+if [[ "$var_zitadel_login" != "v1" ]]; then
   NODE_VERSION="24" setup_nodejs
   fetch_and_deploy_gh_release "zitadel-login" "zitadel/zitadel" "prebuild" "latest" "/opt/zitadel-login" "zitadel-login.tar.gz"
 
@@ -123,7 +123,7 @@ if [[ "$var_zitadel_login" == "v2" ]]; then
 ZITADEL_API_URL=http://127.0.0.1:8081
 ZITADEL_API_AWAITINITIALCONN=5m
 ZITADEL_SERVICE_USER_TOKEN_FILE=/opt/zitadel/login-client.pat
-ZITADEL_SESSION_COOKIE_SECRET=$(openssl rand -base64 32)
+ZITADEL_SESSION_COOKIE_SECRET=$(random_password 48)
 NEXT_PUBLIC_BASE_PATH=/ui/v2/login
 HOSTNAME=127.0.0.1
 PORT=3000
