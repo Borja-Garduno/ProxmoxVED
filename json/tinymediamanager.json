@@ -32,7 +32,7 @@
   },
   "notes": [
     {
-      "text": "Access is via VNC on http://<IP>:6080/vnc.html?resize=scale&autoconnect=true or on port 5900 with a VNC client.",
+      "text": "Access is via VNC on http://<IP>:6080/vnc.html or on port 5900 with a VNC client.",
       "type": "info"
     },
     {
