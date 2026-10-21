@@ -59,17 +59,6 @@ function update_script() {
 
   rm -f /opt/tinymediamanager/.userdir
   chmod +x /opt/tinymediamanager/tinyMediaManager
-  if [[ ! -f /opt/tinymediamanager/launcher-extra.yml ]]; then
-    cat <<EOF >/opt/tinymediamanager/launcher-extra.yml
-javaHome: ""
-jvmOpts:
-  - "-Xmx2048m"
-  - "-Dtmm.noupdate=true"
-  - "-Dtmm.legacy.filechooser=true"
-env:
-  - "_JAVA_AWT_WM_NONREPARENTING=1"
-EOF
-  fi
   echo "${VERSION}" >~/.tinymediamanager
 
   msg_info "Starting tinyMediaManager"
