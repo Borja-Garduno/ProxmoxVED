@@ -66,7 +66,7 @@ function update_script() {
   sleep 2
   systemctl start x11vnc novnc
   msg_ok "Started tinyMediaManager"
-  msg_ok "Updated tinyMediaManager ${CURRENT:-unknown} -> ${VERSION}"
+  msg_ok "Updated tinyMediaManager ${CURRENT} -> ${VERSION}"
   exit
 }
 
