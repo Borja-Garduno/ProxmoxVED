@@ -30,18 +30,5 @@
     "username": null,
     "password": null
   },
-  "notes": [
-    {
-      "text": "Access is via VNC on http://<IP>:6080/vnc.html or on port 5900 with a VNC client.",
-      "type": "info"
-    },
-    {
-      "text": "Empty /media/movies and /media/tvshows folders are created as optional bind-mount targets (e.g. pct set <CTID> -mp0 /path/on/host,mp=/media/movies). On unprivileged LXCs, match host ownership to the container UID mapping.",
-      "type": "info"
-    },
-    {
-      "text": "Portable layout: settings/library live under /opt/tinymediamanager (data/, backup/, …). Updates use create_backup/restore_backup around a clean deploy. Java heap defaults to -Xmx2048m in launcher-extra.yml (raise it there for very large libraries). Built-in auto-update is disabled; use the helper script.",
-      "type": "info"
-    }
-  ]
+  "notes": []
 }

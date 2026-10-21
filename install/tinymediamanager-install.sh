@@ -49,7 +49,6 @@ env:
   - "_JAVA_AWT_WM_NONREPARENTING=1"
 EOF
 echo "${VERSION}" >~/.tinymediamanager
-mkdir -p /media/movies /media/tvshows
 msg_ok "Configured tinyMediaManager"
 
 msg_info "Configuring Openbox"
